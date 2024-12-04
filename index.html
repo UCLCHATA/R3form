@@ -69,8 +69,8 @@
                             <h4>ASC Status</h4>
                             <select name="asc_status">
                                 <option value="">--</option>
-                                <option value="asc_confirmed">ASC Diagnostic Criteria Met</option>
-                                <option value="asc_not_indicated">ASC Diagnostic Criteria Not Met</option>
+                                <option>ASC confirmed</option>
+                                <option>ASC not confirmed</option>
                             </select>
                         </div>
                         
@@ -83,20 +83,6 @@
                                 <option>Previously confirmed</option>
                                 <option>Confirmed during diagnosis</option>
                             </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Professional Referrals -->
-                <div class="section referrals-section">
-                    <h4><i class="material-icons">share</i>Professional Referrals</h4>
-                    <div class="referrals-grid">
-                        <label><input type="checkbox" value="Speech & Language"> Speech & Language</label>
-                        <label><input type="checkbox" value="Educational Psychology"> Educational Psychology</label>
-                        <label><input type="checkbox" value="Sleep Support"> Sleep Support</label>
-                        <div class="referral-other-row">
-                            <label><input type="checkbox" value="Other"> Other </label>
-                            <input type="text" name="other_referrals" class="referral-other-input" placeholder="Specific Remarks">
                         </div>
                     </div>
                 </div>
@@ -154,6 +140,20 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Professional Referrals -->
+                <div class="section referrals-section">
+                    <h4><i class="material-icons">share</i>Professional Referrals</h4>
+                    <div class="referrals-grid">
+                        <label><input type="checkbox" value="Speech & Language"> Speech & Language</label>
+                        <label><input type="checkbox" value="Educational Psychology"> Educational Psychology</label>
+                        <label><input type="checkbox" value="Sleep Support"> Sleep Support</label>
+                        <div class="referral-other-row">
+                            <label><input type="checkbox" value="Other"> Other </label>
+                            <input type="text" name="other_referrals" class="referral-other-input" placeholder="Specific Remarks">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Button Group -->
@@ -173,9 +173,6 @@
         </div>
         <div class="modal-content">
             <textarea class="expandable-text"></textarea>
-            <div class="modal-buttons">
-                <button class="save-close-btn">Save & Close</button>
-            </div>
         </div>
     </div>
 
