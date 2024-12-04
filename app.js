@@ -7,7 +7,7 @@ const SHEETY_PROJECT = 'chata';
 const SHEETY_BASE_URL = `https://api.sheety.co/${SHEETY_API_ID}/${SHEETY_PROJECT}`;
 const ALL_URL_API = `${SHEETY_BASE_URL}/allUrl`;
 const R3_FORM_API = `${SHEETY_BASE_URL}/r3Form`;
-const STORAGE_KEY = 'formR3_fieldContents';
+const STORAGE_KEY = 'formR3_textBoxes';
 
 // Cache configuration
 const CACHE_KEYS = {
@@ -478,59 +478,68 @@ const fieldConfig = {
     }
 };
 
-// Initialize window.fieldContents
-window.fieldContents = window.fieldContents || {
-    referrals: {
-        checked: [],
-        remarks: ''
-    }
+// Initialize storage for text boxes
+window.textBoxContents = window.textBoxContents || {
+    clinical: '',
+    strengths: '',
+    priority: '',
+    support: ''
 };
 
-// Load saved data from localStorage
+// Function to save text box contents
+function saveToLocalStorage() {
+    try {
+        // Get all text box values
+        const textBoxes = {
+            clinical: document.querySelector('.text-box-container.clinical .text-area')?.value || '',
+            strengths: document.querySelector('.text-box-container.strengths .text-area')?.value || '',
+            priority: document.querySelector('.text-box-container.priority .text-area')?.value || '',
+            support: document.querySelector('.text-box-container.support .text-area')?.value || ''
+        };
+        
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(textBoxes));
+        console.log('Saved text boxes:', textBoxes);
+    } catch (e) {
+        console.error('Error saving to localStorage:', e);
+    }
+}
+
+// Function to load saved text box contents
 function loadSavedData() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
         try {
-            window.fieldContents = JSON.parse(saved);
+            const textBoxes = JSON.parse(saved);
             
-            // Load expandable field contents
-            Object.keys(window.fieldContents).forEach(fieldId => {
-                if (fieldId !== 'referrals') {  // Skip referrals object
-                    const preview = document.querySelector(`[data-field-id="${fieldId}"] .field-preview`);
-                    if (preview) {
-                        const content = window.fieldContents[fieldId];
-                        preview.textContent = content || fieldConfig[fieldId].defaultText;
-                    }
+            // Load each text box
+            Object.entries(textBoxes).forEach(([id, value]) => {
+                const textarea = document.querySelector(`.text-box-container.${id} .text-area`);
+                const preview = document.querySelector(`.text-box-container.${id} .field-preview`);
+                
+                if (textarea && value) {
+                    textarea.value = value;
+                }
+                if (preview) {
+                    preview.textContent = value || preview.dataset.defaultText;
                 }
             });
-
-            // Load referral checkboxes
-            if (window.fieldContents.referrals) {
-                const checkboxes = document.querySelectorAll('.referrals-grid input[type="checkbox"]');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = window.fieldContents.referrals.checked.includes(checkbox.value);
-                });
-                
-                // Load remarks
-                const remarksInput = document.querySelector('input[name="other_referrals"]');
-                if (remarksInput && window.fieldContents.referrals.remarks) {
-                    remarksInput.value = window.fieldContents.referrals.remarks;
-                }
-            }
-
         } catch (e) {
             console.error('Error loading saved data:', e);
         }
     }
 }
 
-// Save data to localStorage
-function saveToLocalStorage() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(window.fieldContents));
-    } catch (e) {
-        console.error('Error saving to localStorage:', e);
-    }
+// Function to setup text box listeners
+function setupTextBoxListeners() {
+    document.querySelectorAll('.text-box-container').forEach(container => {
+        const textarea = container.querySelector('.text-area');
+        if (textarea) {
+            textarea.addEventListener('input', debounce(() => {
+                saveToLocalStorage();
+            }, 500));
+        }
+    });
 }
 
 // Function to test API endpoints
@@ -579,46 +588,41 @@ async function handleSubmit() {
             return;
         }
 
-        // Check for existing submission
-        let existingSubmission = null;
-        const formResponse = await fetch(R3_FORM_API);
-        if (formResponse.ok) {
-            const formData = await formResponse.json();
-            if (formData && formData.r3Form) {
-                existingSubmission = formData.r3Form.find(form => form.chataId === selectedChataId);
-            }
-        }
-
-        if (existingSubmission && !confirm('An assessment already exists for this CHATA ID. Do you want to update it?')) {
-            return;
-        }
+        // Get text box values directly
+        const observations = document.querySelector('.text-box-container.clinical .text-area')?.value || '';
+        const strengths = document.querySelector('.text-box-container.strengths .text-area')?.value || '';
+        const supportareas = document.querySelector('.text-box-container.priority .text-area')?.value || '';
+        const recommendations = document.querySelector('.text-box-container.support .text-area')?.value || '';
 
         // Get referrals data
-        const professionalReferrals = window.fieldContents.referrals ? 
-            `Selected referrals: ${window.fieldContents.referrals.checked.join(', ')}${window.fieldContents.referrals.remarks ? `\nRemarks: ${window.fieldContents.referrals.remarks}` : ''}` :
+        const checkedReferrals = Array.from(document.querySelectorAll('.referrals-grid input[type="checkbox"]:checked'))
+            .map(cb => cb.value);
+        const referralRemarks = document.querySelector('input[name="other_referrals"]')?.value || '';
+        const professionalReferrals = checkedReferrals.length > 0 ? 
+            `Selected referrals: ${checkedReferrals.join(', ')}${referralRemarks ? `\nRemarks: ${referralRemarks}` : ''}` :
             'No referrals selected';
 
         // Prepare the form data
         const formData = {
             r3Form: {
-                chataId: selectedChataId,
+                chata_id: selectedChataId,
                 name: selectedData.name,
                 timestamp: new Date().toISOString(),
-                ascStatus: ascStatus,
-                adhdStatus: adhdStatus,
-                keyClinicialObservations: window.fieldContents['clinical-observations'] || '',
-                strengthsAndAbilities: window.fieldContents['strengths-abilities'] || '',
-                prioritySupportAreas: window.fieldContents['priority-support'] || '',
-                supportRecommendations: window.fieldContents['support-recommendations'] || '',
-                professionalReferrals: professionalReferrals
+                asc: ascStatus,
+                adhd: adhdStatus,
+                observations,
+                strengths,
+                supportareas,
+                recommendations,
+                referrals: professionalReferrals
             }
         };
 
         console.log('Submitting form data:', formData);
 
-        // Submit to API with appropriate method
-        const response = await fetch(existingSubmission ? `${R3_FORM_API}/${existingSubmission.id}` : R3_FORM_API, {
-            method: existingSubmission ? 'PUT' : 'POST',
+        // Submit to API
+        const response = await fetch(R3_FORM_API, {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -633,10 +637,7 @@ async function handleSubmit() {
         const result = await response.json();
         console.log('Submission successful:', result);
         
-        // Clear form cache after successful submission
-        clearAllCache();
-        
-        alert(existingSubmission ? 'Assessment updated successfully!' : 'Assessment submitted successfully!');
+        alert('Assessment submitted successfully!');
 
         if (confirm('Would you like to clear the form?')) {
             clearForm();
@@ -862,6 +863,73 @@ function showError(message) {
     alert(message); // Can be replaced with a more sophisticated notification system
 }
 
+// Function to clear form
+function clearForm() {
+    // Clear CHATA ID selection
+    const chataIdSelect = document.getElementById('chata-id-select');
+    if (chataIdSelect) chataIdSelect.value = '';
+
+    // Clear status selections
+    const ascStatus = document.querySelector('select[name="asc_status"]');
+    const adhdStatus = document.querySelector('select[name="adhd_status"]');
+    if (ascStatus) {
+        ascStatus.value = '';
+        ascStatus.classList.remove('asc-confirmed');
+    }
+    if (adhdStatus) adhdStatus.value = '';
+
+    // Clear all text areas and previews
+    document.querySelectorAll('.text-box-container').forEach(container => {
+        const textarea = container.querySelector('.text-area');
+        const preview = container.querySelector('.field-preview');
+        
+        if (textarea) {
+            textarea.value = '';
+        }
+        if (preview) {
+            preview.textContent = preview.dataset.defaultText || '';
+        }
+    });
+
+    // Clear referral checkboxes
+    document.querySelectorAll('.referrals-grid input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Clear referral remarks
+    const remarksInput = document.querySelector('input[name="other_referrals"]');
+    if (remarksInput) remarksInput.value = '';
+
+    // Reset PDF viewers
+    resetPdfViewers();
+
+    // Clear storage
+    localStorage.removeItem(STORAGE_KEY);
+
+    // Add muted state back
+    const formContent = document.querySelector('.form-content');
+    const pdfContainer = document.querySelector('.pdf-container');
+    const buttonGroup = document.querySelector('.button-group');
+    
+    if (formContent) formContent.classList.add('muted');
+    if (pdfContainer) pdfContainer.classList.add('muted');
+    if (buttonGroup) buttonGroup.classList.add('muted');
+    
+    console.log('Form cleared');
+}
+
+// Add clear button functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const clearButton = document.querySelector('.clear-button');
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all form fields?')) {
+                clearForm();
+            }
+        });
+    }
+});
+
 // Initialize the application
 async function initializeApp() {
     try {
@@ -885,9 +953,9 @@ async function initializeApp() {
 
         setupEventListeners();
         setupModalHandlers();
+        setupTextBoxListeners(); // Add text box listeners
+        loadSavedData(); // Load saved text box data
         
-        // Load any saved form data
-        loadSavedData();
     } catch (error) {
         console.error('Error initializing app:', error);
         showError('Failed to initialize application. Please refresh the page.');
