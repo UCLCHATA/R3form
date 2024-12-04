@@ -1,0 +1,51 @@
+/* Reset and base styles */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.4;
+    color: #333;
+    font-size: 14px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Default text style */
+.default-text {
+    color: #495057;
+    white-space: pre-line;
+    margin: 0;
+    padding: 0;
+}
+
+/* Bullet formatting */
+.default-text ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.default-text ul li {
+    padding-left: 1.2em;
+    position: relative;
+    margin-bottom: 0.25rem;
+}
+
+.default-text ul li::before {
+    content: '\2022';  /* Unicode for • */
+    display: inline-block;
+    position: absolute;
+    left: 0.4em;
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1;
+} 

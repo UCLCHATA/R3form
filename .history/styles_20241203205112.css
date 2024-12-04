@@ -1,0 +1,616 @@
+/* Reset and base styles */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.4;
+    color: #333;
+    font-size: 14px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Layout containers */
+.main-container {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+    height: calc(100vh - 90px);
+}
+
+/* PDF container */
+.pdf-container {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pdf-viewer {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-viewer h3 {
+    padding: 0.25rem 0.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.pdf-viewer iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    min-height: 0; /* Prevents flex item overflow */
+}
+
+/* Form container */
+.form-container {
+    flex: 0 0 50% !important;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Form sections */
+.section {
+    background: #fff;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.section h4 {
+    margin-bottom: 0.25rem;
+    color: #2c3e50;
+}
+
+/* Expandable fields */
+.expandable-field {
+    position: relative;
+    min-height: 40px;
+    margin-bottom: 0.5rem;
+}
+
+.field-preview {
+    width: 100%;
+    min-height: 40px;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: white;
+    font-size: 0.9rem;
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+    white-space: pre-line;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+}
+
+.field-preview:hover {
+    background: #f8f9fa;
+}
+
+/* Modal overlay system */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    max-height: 40vh;
+    min-height: 40vh;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    resize: both;
+    overflow: auto;
+}
+
+.modal-container.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    flex-shrink: 0;
+}
+
+.modal-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.modal-content {
+    padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.expandable-text {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.expandable-text::placeholder {
+    color: #6c757d;
+    opacity: 0;
+    white-space: pre-line;
+}
+
+/* Default text style */
+.default-text {
+    color: #495057;
+    white-space: pre-line;
+    margin: 0;
+    padding: 0;
+}
+
+/* Bullet formatting */
+.default-text ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.default-text ul li {
+    padding-left: 1.2em;
+    position: relative;
+    margin-bottom: 0.25rem;
+}
+
+.default-text ul li::before {
+    content: '\2022';  /* Unicode for • */
+    display: inline-block;
+    position: absolute;
+    left: 0.4em;
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* Resize handle styling */
+.modal-container:active {
+    cursor: nwse-resize;
+}
+
+/* Make sure modal content adjusts with resize */
+.modal-container, .modal-content, .expandable-text {
+    max-height: 100vh;
+}
+
+/* Remove old modal footer styles */
+.modal-footer {
+    display: none;
+}
+
+/* Form controls */
+.expandable-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 0.9rem;
+    font-family: inherit;
+    margin: 0;
+    display: block;
+}
+
+.expandable-text::placeholder {
+    color: #6c757d;
+    opacity: 0.8;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #218838;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+}
+
+/* Header and Footer */
+.site-header {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.site-footer {
+    background: #f8f9fa;
+    padding: 0.5rem;
+    text-align: center;
+    height: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Utility classes */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.status-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.status-item h4 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.status-item select {
+    width: 100%;
+    padding: 0.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Instruction box */
+.instruction-box {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.25rem;
+    margin: 0.25rem 0;
+    color: #6c757d;
+    font-size: 0.75rem;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.2;
+}
+
+/* Alternative hover instruction */
+.expandable-field {
+    position: relative;
+}
+
+.hover-instruction {
+    display: none;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.hover-instruction::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: #333 transparent transparent;
+}
+
+.expandable-field:hover .hover-instruction {
+    display: block;
+}
+
+/* Referrals grid and other input */
+.referrals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.referral-other-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    grid-column: 1 / -1;
+}
+
+.referral-other-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.referral-other-input {
+    flex: 1;
+    padding: 0.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.submit-button, .clear-button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.submit-button {
+    background: #007bff;
+    color: white;
+}
+
+.submit-button:hover {
+    background: #0056b3;
+}
+
+.clear-button {
+    background: #6c757d;
+    color: white;
+}
+
+.clear-button:hover {
+    background: #5a6268;
+}
+ 
+/* CHATA ID Selector Styles */
+.chata-identifier {
+    margin-bottom: 1rem;
+}
+
+.chata-header {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.chata-select-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#chata-id-select {
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.chata-name {
+    font-weight: 500;
+    color: #2c3e50;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    min-width: 150px;
+    display: inline-block;
+}
+
+.site-header {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#chata-id-select {
+    min-width: 160px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+#chata-name-display {
+    min-width: 120px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: white;
+    display: flex;
+    align-items: center;
+}
+
+.pdf-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+.form-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.chata-id-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
+}
+
+#chata-id-select {
+    min-width: 200px;
+}
+
+#chata-name-display {
+    font-weight: 500;
+    color: #2c3e50;
+    flex-grow: 1;
+}
+
+.refresh-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.refresh-button:active {
+    background-color: #dee2e6;
+}
+
+.refresh-button i {
+    font-size: 0.9em;
+}
+
+/* Add rotation animation for refresh icon */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.refresh-button.loading i {
+    animation: spin 1s linear infinite;
+}

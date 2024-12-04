@@ -1,0 +1,99 @@
+/* Layout containers */
+.main-container {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+    height: calc(100vh - 90px);
+}
+
+/* Header styles */
+.site-header {
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content h1 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* PDF container */
+.pdf-container {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pdf-viewer {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-viewer h3 {
+    padding: 0.25rem 0.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.pdf-viewer iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    min-height: 0; /* Prevents flex item overflow */
+}
+
+/* Form container */
+.form-container {
+    flex: 0 0 50% !important;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Footer styles */
+.site-footer {
+    background: #f8f9fa;
+    padding: 1rem;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.site-footer p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+} 

@@ -1,0 +1,1558 @@
+/* Reset and base styles */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.4;
+    color: #333;
+    font-size: 14px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Main container */
+.main-container {
+    height: calc(100vh - 90px);
+    display: flex;
+    gap: 12px;
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* Form container */
+.form-container {
+    flex: 0 0 50%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+}
+
+/* Form content */
+.form-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 4px 40px 4px;
+    display: flex;
+    flex-direction: column;
+    background: #f5f6f8;
+}
+
+/* Muted state for content before CHATA ID selection */
+.form-content.muted {
+    opacity: 0.6;
+    filter: grayscale(40%);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Grid layout */
+.middle-sections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 8px 0;
+    align-items: start;
+}
+
+/* Expandable sections */
+.section.expandable-section {
+    background: #fff;
+    border-radius: 4px;
+    padding: 12px;
+    position: relative;
+    cursor: pointer;
+    user-select: none; /* Prevent text selection on double click */
+}
+
+/* Hover instruction for entire section */
+.section.expandable-section::after {
+    content: 'Double-click to expand';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.section.expandable-section:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Make textarea not affect pointer events of parent */
+.field-preview {
+    cursor: text;
+    position: relative;
+    z-index: 0;
+}
+
+/* Subtle hover effect for the entire section */
+.section.expandable-section:hover {
+    background: #fafafa;
+}
+
+/* Color System using HSL */
+:root {
+    /* Base colors in HSL */
+    --color-green-hue: 145;
+    --color-yellow-hue: 48;
+    --color-red-hue: 6;
+    --color-purple-hue: 282;
+
+    /* Saturation levels */
+    --saturation-default: 55%;  /* Default muted state */
+    --saturation-hover: 75%;    /* Hover state */
+    --saturation-active: 95%;   /* When typing/active */
+    --saturation-expanded: 50%; /* Expanded modal view */
+    
+    /* Lightness levels */
+    --lightness-normal: 55%;
+
+    /* Border widths */
+    --border-default: 1.5px;
+    --border-hover: 2px;
+    --border-active: 2.5px;
+    --border-expanded: 2px;
+}
+
+/* Clinical observations - Green */
+.section.expandable-section:nth-child(1) {
+    border: var(--border-default) solid hsl(var(--color-green-hue), var(--saturation-default), var(--lightness-normal));
+    transition: border 0.2s ease;
+}
+.section.expandable-section:nth-child(1):hover {
+    border-width: var(--border-hover);
+    border-color: hsl(var(--color-green-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(1):focus-within {
+    border-width: var(--border-active);
+    border-color: hsl(var(--color-green-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Strengths - Yellow */
+.section.expandable-section:nth-child(2) {
+    border: var(--border-default) solid hsl(var(--color-yellow-hue), var(--saturation-default), var(--lightness-normal));
+    transition: border 0.2s ease;
+}
+.section.expandable-section:nth-child(2):hover {
+    border-width: var(--border-hover);
+    border-color: hsl(var(--color-yellow-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(2):focus-within {
+    border-width: var(--border-active);
+    border-color: hsl(var(--color-yellow-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Priority support - Red */
+.section.expandable-section:nth-child(3) {
+    border: var(--border-default) solid hsl(var(--color-red-hue), var(--saturation-default), var(--lightness-normal));
+    transition: border 0.2s ease;
+}
+.section.expandable-section:nth-child(3):hover {
+    border-width: var(--border-hover);
+    border-color: hsl(var(--color-red-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(3):focus-within {
+    border-width: var(--border-active);
+    border-color: hsl(var(--color-red-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Support recommendations - Purple */
+.section.expandable-section:nth-child(4) {
+    border: var(--border-default) solid hsl(var(--color-purple-hue), var(--saturation-default), var(--lightness-normal));
+    transition: border 0.2s ease;
+}
+.section.expandable-section:nth-child(4):hover {
+    border-width: var(--border-hover);
+    border-color: hsl(var(--color-purple-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(4):focus-within {
+    border-width: var(--border-active);
+    border-color: hsl(var(--color-purple-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Field container */
+.expandable-field {
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    display: block;
+}
+
+/* Text input area */
+.field-preview {
+    width: 100%;
+    min-height: 82px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    overflow: auto;
+    white-space: pre-wrap;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* Default text state */
+.field-preview.default-text {
+    color: #6c757d;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Focus and hover states */
+.field-preview:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    outline: none;
+    opacity: 1;
+    color: #212529;
+}
+
+.field-preview:hover {
+    border-color: #adb5bd;
+}
+
+/* Double-click instruction */
+.expandable-field::after {
+    content: 'Double-click to open full screen';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: #6c757d;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.expandable-field:hover::after {
+    opacity: 1;
+}
+
+/* Container for the textarea */
+.expandable-field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+/* Standard resize handle */
+.field-preview::-webkit-resizer {
+    border-width: 2px;
+    border-color: #dee2e6;
+    border-style: solid;
+    background-color: transparent;
+}
+
+/* Firefox resize handle */
+.field-preview {
+    scrollbar-width: thin;
+    scrollbar-color: #dee2e6 transparent;
+}
+
+/* Ensure proper height behavior */
+.field-preview {
+    height: auto;
+    min-height: 82px;
+    max-height: none;
+}
+
+.field-preview:focus {
+    height: auto;
+}
+
+/* Remove any custom resize handles */
+.field-preview::after {
+    display: none;
+}
+
+/* Expandable section styling */
+.section.expandable-section {
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover instruction */
+.section.expandable-section::before {
+    content: 'Double-click to open full screen';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 20;
+    white-space: nowrap;
+}
+
+.section.expandable-section:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Section headers - slightly larger for cards */
+.section h4 {
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0 8px;
+}
+
+/* Make instruction box more compact */
+.instruction-box {
+    padding: 2px;
+    margin: 2px 0;
+    font-size: 0.75rem;
+}
+
+/* Status group - tighter */
+.status-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.status-item select {
+    width: 100%;
+    padding: 4px 8px;
+    height: 28px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background: #fff;
+}
+
+/* Field preview styles - more compact */
+.expandable-field {
+    background: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 3px;
+    margin-bottom: 2px;
+    transition: background-color 0.2s;
+}
+
+.expandable-field:hover {
+    background: #f8f9fa;
+}
+
+.field-preview {
+    min-height: 16px;
+    max-height: 32px;
+    padding: 2px 4px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    transition: border-color 0.2s;
+}
+
+.field-preview:hover {
+    border-color: #adb5bd;
+}
+
+/* Default preview text style */
+.field-preview.default-text {
+    color: #6c757d;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Button group - closer to bottom */
+.button-group {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 4px;
+    background: linear-gradient(to bottom, rgba(248,249,250,0.9), #f8f9fa);
+    border-top: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+    height: 36px;
+}
+
+.submit-button, .clear-button {
+    flex: 1;
+    padding: 4px;
+    height: 24px; /* Smaller height */
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit-button {
+    background: #007bff;
+    color: white;
+}
+
+.clear-button {
+    background: #6c757d;
+    color: white;
+}
+
+/* Instruction box - beige background */
+.instruction-box {
+    padding: 3px;
+    margin: 2px 0;
+    color: #664d03;
+    font-size: 0.75rem;
+    text-align: center;
+    background: #fff3cd;
+    border-radius: 4px;
+    border: 1px solid #ffecb5;
+    font-style: italic;
+    line-height: 1.2;
+}
+
+/* Professional Referrals section - ultra compact */
+.referrals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 2px;
+}
+
+.referral-other-row {
+    margin-top: 2px;
+}
+
+/* PDF container */
+.pdf-container {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pdf-viewer {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 8px;
+}
+
+.pdf-viewer h3 {
+    padding: 8px 12px;
+    margin: 0;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pdf-viewer h3 i {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.pdf-viewer iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    min-height: 0;
+    background: #fff;
+}
+
+/* Custom scrollbar for PDF viewer */
+.pdf-viewer::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.pdf-viewer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Hide scrollbar when not hovering */
+.pdf-viewer {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.pdf-viewer:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+/* Modal overlay system */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-container {
+    position: fixed;
+    top: 60px; /* Below header */
+    right: 20px; /* Aligned to right */
+    width: 45%; /* Match form width */
+    min-height: fit-content;
+    max-height: 80vh; /* Maximum 80% of viewport height */
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    overflow: hidden;
+}
+
+.modal-container.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    flex-shrink: 0;
+}
+
+.modal-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.modal-content {
+    padding: 16px;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.expandable-text {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: none;
+    overflow-y: auto;
+    background: #fff;
+    color: #2c3e50;
+    font-family: inherit;
+}
+
+.expandable-text:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Scrollbar styling */
+.expandable-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.expandable-text::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.expandable-text::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.expandable-text::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Default text style */
+.default-text {
+    color: #495057;
+    white-space: pre-line;
+    margin: 0;
+    padding: 0;
+}
+
+/* Bullet formatting */
+.default-text ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.default-text ul li {
+    padding-left: 1.2em;
+    position: relative;
+    margin-bottom: 0.25rem;
+}
+
+.default-text ul li::before {
+    content: '\2022';  /* Unicode for • */
+    display: inline-block;
+    position: absolute;
+    left: 0.4em;
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* Resize handle styling */
+.modal-container:active {
+    cursor: nwse-resize;
+}
+
+/* Make sure modal content adjusts with resize */
+.modal-container, .modal-content, .expandable-text {
+    max-height: 100vh;
+}
+
+/* Remove old modal footer styles */
+.modal-footer {
+    display: none;
+}
+
+/* Form controls */
+.expandable-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 0.9rem;
+    font-family: inherit;
+    margin: 0;
+    display: block;
+}
+
+.expandable-text::placeholder {
+    color: #6c757d;
+    opacity: 0.8;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #218838;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+}
+
+/* Header and Footer */
+.site-header {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.site-footer {
+    background: #f8f9fa;
+    padding: 0.5rem;
+    text-align: center;
+    height: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Utility classes */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.status-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-item h4 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.status-item select {
+    width: 100%;
+    padding: 2px 4px;
+    height: 26px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.status-item select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    outline: none;
+}
+
+/* Instruction box with improved visibility */
+.instruction-box {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 3px;
+    margin: 2px 0;
+    color: #6c757d;
+    font-size: 0.75rem;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    line-height: 1.2;
+}
+
+/* Alternative hover instruction */
+.expandable-field {
+    position: relative;
+}
+
+.hover-instruction {
+    display: none;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.hover-instruction::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: #333 transparent transparent;
+}
+
+.expandable-field:hover .hover-instruction {
+    display: block;
+}
+
+/* Referrals grid and other input */
+.referrals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 3px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.referral-other-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2px;
+}
+
+.referral-other-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.referral-other-input {
+    flex: 1;
+    padding: 0.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Button group */
+.button-group {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.submit-button, .clear-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    height: 32px;
+}
+
+.submit-button {
+    background: #007bff;
+    color: white;
+}
+
+.submit-button:hover {
+    background: #0056b3;
+}
+
+.clear-button {
+    background: #6c757d;
+    color: white;
+}
+
+.clear-button:hover {
+    background: #5a6268;
+}
+ 
+/* CHATA ID Selector Styles */
+.chata-identifier {
+    margin-bottom: 1rem;
+}
+
+.chata-header {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.chata-select-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#chata-id-select {
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.chata-name {
+    font-weight: 500;
+    color: #2c3e50;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    min-width: 150px;
+    display: inline-block;
+}
+
+.site-header {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#chata-id-select {
+    min-width: 160px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+#chata-name-display {
+    min-width: 120px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: white;
+    display: flex;
+    align-items: center;
+}
+
+.pdf-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 2rem;
+    gap: 12px;
+}
+
+.pdf-placeholder i {
+    font-size: 48px;
+    color: #adb5bd;
+}
+
+.pdf-placeholder span {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Field preview base styles */
+.expandable-field .field-preview {
+    min-height: 24px;
+    max-height: 48px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: pre-line;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Preview state - semi-transparent */
+.expandable-field .field-preview.default-text,
+.expandable-field .field-preview:empty {
+    color: #6c757d !important;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Hover state - slightly more visible */
+.expandable-field:hover .field-preview.default-text,
+.expandable-field:hover .field-preview:empty {
+    opacity: 0.65;
+}
+
+/* Active/Filled state - full visibility */
+.expandable-field .field-preview:not(.default-text):not(:empty) {
+    color: #212529;
+    opacity: 1;
+}
+
+/* Focus state */
+.expandable-field .field-preview:focus {
+    opacity: 1;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Compact expandable field */
+.expandable-field {
+    background: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Ensure form sections are compact */
+.section {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+}
+
+/* Keep form container compact */
+.form-container {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Ensure buttons are visible */
+.button-group {
+    margin-top: auto;
+    padding: 0.5rem 0;
+    position: sticky;
+    bottom: 0;
+    background: #f8f9fa;
+}
+
+/* Checkbox and label sizing */
+.referrals-grid input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+
+.referrals-grid label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.referrals-grid label:hover {
+    background: #f8f9fa;
+}
+
+/* Section headers with icons */
+.section h4 {
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section h4 i {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-size: 1.2rem;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+/* Status section icon */
+.section.status-section h4 i {
+    color: #4a90e2;
+}
+
+/* Clinical observations icon */
+.section.expandable-section:nth-child(1) h4 i {
+    color: hsl(var(--color-green-hue), var(--saturation-default), var(--lightness-normal));
+    transition: color 0.2s ease;
+}
+.section.expandable-section:nth-child(1):hover h4 i {
+    color: hsl(var(--color-green-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(1):focus-within h4 i {
+    color: hsl(var(--color-green-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Strengths icon */
+.section.expandable-section:nth-child(2) h4 i {
+    color: hsl(var(--color-yellow-hue), var(--saturation-default), var(--lightness-normal));
+    transition: color 0.2s ease;
+}
+.section.expandable-section:nth-child(2):hover h4 i {
+    color: hsl(var(--color-yellow-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(2):focus-within h4 i {
+    color: hsl(var(--color-yellow-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Priority support icon */
+.section.expandable-section:nth-child(3) h4 i {
+    color: hsl(var(--color-red-hue), var(--saturation-default), var(--lightness-normal));
+    transition: color 0.2s ease;
+}
+.section.expandable-section:nth-child(3):hover h4 i {
+    color: hsl(var(--color-red-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(3):focus-within h4 i {
+    color: hsl(var(--color-red-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Support recommendations icon */
+.section.expandable-section:nth-child(4) h4 i {
+    color: hsl(var(--color-purple-hue), var(--saturation-default), var(--lightness-normal));
+    transition: color 0.2s ease;
+}
+.section.expandable-section:nth-child(4):hover h4 i {
+    color: hsl(var(--color-purple-hue), var(--saturation-hover), var(--lightness-normal));
+}
+.section.expandable-section:nth-child(4):focus-within h4 i {
+    color: hsl(var(--color-purple-hue), var(--saturation-active), var(--lightness-normal));
+}
+
+/* Referrals section icon */
+.section.referrals-section h4 i {
+    color: #3498db;
+}
+
+/* Material Icons base styles */
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1.2rem;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+}
+
+/* Field preview styles - larger and resizable */
+.expandable-field {
+    background: #fff;
+    border: none;
+    padding: 8px;
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.field-preview {
+    min-height: 30px;
+    height: auto;
+    max-height: none;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    flex: 1;
+    transition: border-color 0.2s;
+    resize: vertical;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    position: relative;
+}
+
+/* Resizing handle style */
+.field-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 50%,
+        #adb5bd 50%,
+        #adb5bd 100%
+    );
+    cursor: ns-resize;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.field-preview:hover::after {
+    opacity: 1;
+}
+
+/* Default preview text style */
+.field-preview.default-text {
+    color: #6c757d;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Hover and focus states */
+.field-preview:hover,
+.field-preview:focus {
+    border-color: #adb5bd;
+    outline: none;
+}
+
+.field-preview:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Resize handle */
+.field-preview::-webkit-resizer {
+    background-color: #dee2e6;
+    padding: 4px;
+}
+
+/* Expand button */
+.expand-button {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.expandable-field:hover .expand-button {
+    opacity: 1;
+}
+
+/* Expanded state */
+.expandable-field.expanded .field-preview {
+    min-height: 240px; /* Double the default height when expanded */
+}
+
+/* Ensure form content scrolls properly */
+.form-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 4px 40px 4px;
+}
+
+/* Header and footer - always active */
+.header,
+.footer {
+    opacity: 1;
+    filter: none;
+    pointer-events: auto;
+}
+
+/* Section colors */
+.section.expandable-section:nth-child(1) {
+    border: var(--border-default) solid hsl(var(--color-green-hue), var(--saturation-default), var(--lightness-normal));
+}
+
+.section.expandable-section:nth-child(2) {
+    border: var(--border-default) solid hsl(var(--color-yellow-hue), var(--saturation-default), var(--lightness-normal));
+}
+
+.section.expandable-section:nth-child(3) {
+    border: var(--border-default) solid hsl(var(--color-red-hue), var(--saturation-default), var(--lightness-normal));
+}
+
+.section.expandable-section:nth-child(4) {
+    border: var(--border-default) solid hsl(var(--color-purple-hue), var(--saturation-default), var(--lightness-normal));
+}
+
+/* Modal container color states based on active section - more subtle */
+.modal-container[data-field-id="clinical-observations"] {
+    border: var(--border-expanded) solid hsl(var(--color-green-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="strengths-abilities"] {
+    border: var(--border-expanded) solid hsl(var(--color-yellow-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="priority-support"] {
+    border: var(--border-expanded) solid hsl(var(--color-red-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="support-recommendations"] {
+    border: var(--border-expanded) solid hsl(var(--color-purple-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+
+/* Modal header styling - neutral */
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid #dee2e6; /* Neutral border color */
+}
+
+/* Modal header icon colors - more subtle */
+.modal-container[data-field-id="clinical-observations"] .modal-header i {
+    color: hsl(var(--color-green-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="strengths-abilities"] .modal-header i {
+    color: hsl(var(--color-yellow-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="priority-support"] .modal-header i {
+    color: hsl(var(--color-red-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+.modal-container[data-field-id="support-recommendations"] .modal-header i {
+    color: hsl(var(--color-purple-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+
+.modal-header i {
+    font-size: 1.2rem;
+}
+
+.modal-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Modal content area */
+.modal-content {
+    padding: 16px;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+}
+
+/* Remove any colored borders from textarea */
+.expandable-text {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+/* Text states for preview fields */
+.field-preview {
+    color: #6c757d;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+/* Hover state - slightly darker but not full black */
+.field-preview:hover {
+    opacity: 0.8;
+}
+
+/* Active/Focus state - full black, highest priority */
+.field-preview:focus,
+.field-preview:focus-within,
+.expandable-section:focus-within .field-preview {
+    color: #212529;
+    opacity: 1;
+}
+
+/* Ensure hover doesn't override active state */
+.field-preview:focus:hover,
+.field-preview:focus-within:hover,
+.expandable-section:focus-within .field-preview:hover {
+    color: #212529;
+    opacity: 1;
+}
+
+/* Default preview text style */
+.field-preview.default-text {
+    font-style: italic;
+}
+
+/* Ensure proper text color in expanded modal */
+.modal-container .expandable-text {
+    color: #212529;
+    opacity: 1;
+}
+
+/* Header controls */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Refresh button */
+.refresh-button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+    color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+}
+
+.refresh-button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.refresh-button.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Existing submission warning */
+.existing-submission-warning {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: #dc3545;
+    opacity: 0.85;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.existing-submission-warning i {
+    font-size: 16px;
+}
+
+.existing-submission-warning span {
+    white-space: nowrap;
+}
+
+/* Submission warnings */
+.existing-submission-warning,
+.submit-warning {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    animation: fadeIn 0.3s ease;
+}
+
+.existing-submission-warning {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.submit-warning {
+    color: #856404;
+    background: rgba(255, 193, 7, 0.1);
+    margin-bottom: 8px;
+}
+
+.existing-submission-warning i,
+.submit-warning i {
+    font-size: 16px;
+}
+
+.existing-submission-warning span,
+.submit-warning span {
+    white-space: nowrap;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

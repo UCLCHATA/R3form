@@ -1,0 +1,290 @@
+/* Global styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.site-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+    height: calc(100vh - 90px);
+}
+
+/* PDF Container Styles */
+.pdf-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 100%;
+}
+
+.pdf-viewer {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-viewer h3 {
+    margin: 0;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+/* Form Container Styles */
+.form-container {
+    flex: 1;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.section {
+    margin-bottom: 10px;
+}
+
+/* Status Group Styles */
+.status-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.status-item {
+    flex: 1;
+}
+
+.status-item select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Expandable Field Styles */
+.expandable-field {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 8px;
+    position: relative;
+    cursor: pointer;
+}
+
+.field-preview {
+    min-height: 30px;
+    padding: 3px;
+    font-size: 0.9rem;
+}
+
+.hover-instruction {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 0.8em;
+}
+
+.expandable-field:hover .hover-instruction {
+    display: block;
+}
+
+/* Modal Styles */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 8px;
+    z-index: 1001;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.modal-container.active {
+    display: block;
+}
+
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal-content textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* Referrals Grid */
+.referrals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.referral-other-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.referral-other-input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Button Styles */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.submit-button, .clear-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.submit-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.clear-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #27ae60;
+}
+
+.clear-button:hover {
+    background-color: #c0392b;
+}
+
+/* Footer Styles */
+.site-footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+}
+
+/* Instruction Box */
+.instruction-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+/* Add these new styles for form elements */
+h4 {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+select {
+    font-size: 0.9rem;
+}
+
+/* Add to your styles.css */
+.section {
+    padding: 0.5rem;  /* Reduced from 0.75rem */
+    margin-bottom: 0.25rem;  /* Reduced from 0.5rem */
+}
+
+.expandable-field {
+    min-height: 32px;  /* Reduced from 40px */
+    margin-bottom: 0.25rem;  /* Reduced from 0.5rem */
+}
+
+.field-preview {
+    min-height: 32px;  /* Reduced from 40px */
+    padding: 0.25rem 0.5rem;  /* Reduced padding */
+}
+
+.instruction-box {
+    padding: 0.15rem;  /* Reduced padding */
+    margin: 0.15rem 0;  /* Reduced margin */
+}
+
+.referrals-grid {
+    margin-top: 0.25rem;  /* Reduced from 0.5rem */
+}
+
+.button-group {
+    margin-top: 0.5rem;  /* Reduced from 1rem */
+}

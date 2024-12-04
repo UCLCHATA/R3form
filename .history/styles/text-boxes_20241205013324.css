@@ -1,0 +1,291 @@
+/* Text Box Container Styles */
+.text-box-container {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    border-width: var(--border-width-default);
+    border-style: solid;
+}
+
+/* Color System */
+:root {
+    --color-clinical: hsl(145, 55%, 92%);
+    --color-strengths: hsl(48, 55%, 92%);
+    --color-priority: hsl(6, 55%, 92%);
+    --color-support: hsl(282, 55%, 92%);
+    
+    --border-clinical: hsl(145, 55%, 60%);
+    --border-strengths: hsl(48, 55%, 60%);
+    --border-priority: hsl(6, 55%, 60%);
+    --border-support: hsl(282, 55%, 60%);
+
+    --border-width-default: 2px;
+    --border-width-hover: 3px;
+    --border-width-active: 4px;
+}
+
+/* Hover instruction */
+.text-box-container::after {
+    content: 'Double-click to expand';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.text-box-container:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* Container Variants with Hover and Active States */
+.text-box-container.clinical {
+    background: var(--color-clinical);
+    border-color: var(--border-clinical);
+}
+
+.text-box-container.strengths {
+    background: var(--color-strengths);
+    border-color: var(--border-strengths);
+}
+
+.text-box-container.priority {
+    background: var(--color-priority);
+    border-color: var(--border-priority);
+}
+
+.text-box-container.support {
+    background: var(--color-support);
+    border-color: var(--border-support);
+}
+
+/* Hover States */
+.text-box-container:hover {
+    border-width: var(--border-width-hover);
+}
+
+/* Active States (when typing or modal open) */
+.text-box-container.active {
+    border-width: var(--border-width-active);
+}
+
+/* Text Area Base Styles */
+.text-area {
+    width: 100%;
+    min-height: 82px;
+    max-height: 80vh;
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+    color: #000;
+}
+
+/* Text Area States */
+.text-area:hover {
+    opacity: 0.75;
+}
+
+.text-area:focus {
+    opacity: 1;
+    outline: none;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Container hover affects text area */
+.text-box-container:hover .text-area {
+    opacity: 0.75;
+}
+
+/* Active container (modal open or typing) */
+.text-box-container.active .text-area {
+    opacity: 1;
+}
+
+/* Header Styles */
+.text-box-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 8px;
+}
+
+.text-box-header i {
+    font-size: 20px;
+}
+
+.text-box-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Text Area Styles */
+.text-box-content {
+    position: relative;
+    padding: 0 16px 16px;
+}
+
+.text-area {
+    width: 100%;
+    min-height: 82px;
+    max-height: 80vh;
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+/* Resize Handle */
+.resize-handle {
+    position: absolute;
+    bottom: 4px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    cursor: ns-resize;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.resize-handle:hover {
+    opacity: 1;
+}
+
+/* Hover States */
+.text-box-container:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-box-container.clinical:hover { border-color: hsl(145, 65%, 55%); }
+.text-box-container.strengths:hover { border-color: hsl(48, 65%, 55%); }
+.text-box-container.priority:hover { border-color: hsl(6, 65%, 55%); }
+.text-box-container.support:hover { border-color: hsl(282, 65%, 55%); }
+
+/* Modal Styles */
+.text-box-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    height: 80%;
+    background: #fff;
+    border-radius: 8px;
+    z-index: 1001;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.text-box-modal.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-content {
+    flex: 1;
+    padding: 16px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.modal-textarea {
+    width: 100%;
+    height: calc(100% - 32px);
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    resize: none;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    background: #fff;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+    gap: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Modal Controls */
+.modal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-controls button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background: #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.modal-controls button:hover {
+    background: #e0e0e0;
+}
+
+.modal-save {
+    background: #4a90e2 !important;
+    color: white;
+}
+
+.modal-save:hover {
+    background: #357abd !important;
+} 
