@@ -350,21 +350,6 @@ async function handleChataIdChange(event) {
         pdfContainer?.classList.remove('muted');
         buttonGroup?.classList.remove('muted');
         
-        // Load default text for all text areas if they're empty
-        document.querySelectorAll('.text-box-container').forEach(container => {
-            const textarea = container.querySelector('.text-area');
-            const preview = container.querySelector('.field-preview');
-            const defaultText = container.dataset.defaultText || '';
-            
-            // Only set default text if the field is empty
-            if (textarea && !textarea.value.trim()) {
-                textarea.value = defaultText;
-            }
-            if (preview && !preview.textContent.trim()) {
-                preview.textContent = defaultText;
-            }
-        });
-        
         // Check for existing submission
         await checkExistingSubmission(selectedId);
 

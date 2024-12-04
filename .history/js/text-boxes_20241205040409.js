@@ -28,12 +28,17 @@ class TextBox {
         // Set default text if provided
         if (this.options.defaultText) {
             this.textArea.value = this.options.defaultText;
+            window.fieldContents[this.container.dataset.fieldId] = this.options.defaultText;
         }
 
         // Ensure initial bullet point if empty
         if (!this.textArea.value) {
             this.textArea.value = this.bulletPoint;
+            window.fieldContents[this.container.dataset.fieldId] = this.bulletPoint;
         }
+
+        // Save initial state
+        saveToLocalStorage();
     }
     
     initResizeHandle() {
@@ -95,11 +100,17 @@ class TextBox {
             if (TextBox.activeInstance === this && this.modal.classList.contains('active')) {
                 this.modalTextArea.value = this.textArea.value;
             }
+            // Update fieldContents and save
+            window.fieldContents[this.container.dataset.fieldId] = this.textArea.value;
+            saveToLocalStorage();
         });
         
         this.modalTextArea.addEventListener('input', () => {
             if (TextBox.activeInstance === this) {
                 this.textArea.value = this.modalTextArea.value;
+                // Update fieldContents and save
+                window.fieldContents[this.container.dataset.fieldId] = this.modalTextArea.value;
+                saveToLocalStorage();
             }
         });
 
@@ -163,6 +174,10 @@ class TextBox {
             } else if (textarea === this.textArea && TextBox.activeInstance === this) {
                 this.modalTextArea.value = textarea.value;
             }
+
+            // Update fieldContents and save
+            window.fieldContents[this.container.dataset.fieldId] = textarea.value;
+            saveToLocalStorage();
         }
     }
 
@@ -204,6 +219,10 @@ class TextBox {
         } else if (textarea === this.textArea && TextBox.activeInstance === this) {
             this.modalTextArea.value = textarea.value;
         }
+
+        // Update fieldContents and save
+        window.fieldContents[this.container.dataset.fieldId] = textarea.value;
+        saveToLocalStorage();
     }
     
     openModal() {
@@ -221,23 +240,34 @@ class TextBox {
         // Update modal header
         const header = this.container.querySelector('.text-box-header').cloneNode(true);
         this.modal.querySelector('.modal-header').prepend(header);
+
+        // Ensure backdrop is shown
+        document.querySelector('.modal-backdrop').classList.add('active');
     }
     
     closeModal() {
         if (TextBox.activeInstance === this) {
             this.modal.classList.remove('active');
             this.container.classList.remove('active');
+            document.querySelector('.modal-backdrop').classList.remove('active');
             TextBox.activeInstance = null;
             
             // Remove cloned header
             const header = this.modal.querySelector('.text-box-header');
             if (header) header.remove();
+
+            // Update fieldContents and save
+            window.fieldContents[this.container.dataset.fieldId] = this.textArea.value;
+            saveToLocalStorage();
         }
     }
     
     saveAndClose() {
         if (TextBox.activeInstance === this) {
             this.textArea.value = this.modalTextArea.value;
+            // Update fieldContents and save
+            window.fieldContents[this.container.dataset.fieldId] = this.textArea.value;
+            saveToLocalStorage();
             this.closeModal();
         }
     }
@@ -253,6 +283,10 @@ class TextBox {
         }
         
         this.textArea.value = value || this.bulletPoint;
+        // Update fieldContents and save
+        window.fieldContents[this.container.dataset.fieldId] = this.textArea.value;
+        saveToLocalStorage();
+
         if (TextBox.activeInstance === this && this.modal.classList.contains('active')) {
             this.modalTextArea.value = this.textArea.value;
         }
@@ -261,6 +295,9 @@ class TextBox {
 
 // Initialize text boxes
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize window.fieldContents if not exists
+    window.fieldContents = window.fieldContents || {};
+    
     const containers = document.querySelectorAll('.text-box-container');
     containers.forEach(container => {
         new TextBox(container, {

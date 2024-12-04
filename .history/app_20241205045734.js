@@ -13,11 +13,23 @@ const STORAGE_KEY = 'formR3_textBoxes';
 const CACHE_KEYS = {
     CHATA_DATA: 'chataData_cache',
     FORM_DATA: 'submitted_forms_cache',
-    PDF_URLS: 'pdf_urls_cache',
-    TIMESTAMP: 'cache_timestamp'
+    PDF_URLS: 'pdf_urls_cache'
 };
 
 let chataData = [];
+
+// Add debounce utility at the top after imports
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
 // Function to check if cache is valid
 function isCacheValid(key) {
@@ -48,10 +60,15 @@ function getCachedData(key) {
     }
 }
 
-// Function to set cache data
+// Function to set cache data with timestamp
 function setCacheData(key, data) {
     try {
         localStorage.setItem(key, JSON.stringify(data));
+        
+        // Update last refresh timestamp for this key
+        const lastRefresh = getCachedData(CACHE_KEYS.LAST_REFRESH) || {};
+        lastRefresh[key] = Date.now();
+        localStorage.setItem(CACHE_KEYS.LAST_REFRESH, JSON.stringify(lastRefresh));
     } catch (error) {
         console.error('Error setting cache:', error);
     }
@@ -204,22 +221,32 @@ async function checkExistingSubmission(chataId) {
         refreshButton.parentNode.replaceChild(newRefreshButton, refreshButton);
 
         // Add refresh functionality to the button regardless of state
-        const handleRefreshClick = async () => {
-            const currentIcon = newRefreshButton.innerHTML;
+        const handleRefreshClick = debounce(async () => {
+            const refreshButton = document.getElementById('refresh-data');
+            
+            // Prevent refresh if already loading
+            if (refreshButton.classList.contains('loading')) {
+                console.log('Refresh already in progress, skipping request');
+                return;
+            }
+            
+            const currentIcon = refreshButton.innerHTML;
             try {
-                newRefreshButton.classList.add('loading');
+                refreshButton.classList.add('loading');
                 await loadAllData(true); // Force refresh all data
-                await checkExistingSubmission(chataId); // Recheck submission after refresh
+                const selectedChataId = document.getElementById('chata-id-select').value;
+                if (selectedChataId) {
+                    await checkExistingSubmission(selectedChataId);
+                }
                 showSuccess('Data refreshed successfully!');
             } catch (error) {
                 console.error('Error refreshing data:', error);
                 showError('Error refreshing data. Please try again.');
-                // Restore original icon if error occurs
-                newRefreshButton.innerHTML = currentIcon;
+                refreshButton.innerHTML = currentIcon;
             } finally {
-                newRefreshButton.classList.remove('loading');
+                refreshButton.classList.remove('loading');
             }
-        };
+        }, 500); // 500ms debounce delay
 
         if (existingSubmission) {
             // Update refresh button to warning state
@@ -349,21 +376,6 @@ async function handleChataIdChange(event) {
         formContent?.classList.remove('muted');
         pdfContainer?.classList.remove('muted');
         buttonGroup?.classList.remove('muted');
-        
-        // Load default text for all text areas if they're empty
-        document.querySelectorAll('.text-box-container').forEach(container => {
-            const textarea = container.querySelector('.text-area');
-            const preview = container.querySelector('.field-preview');
-            const defaultText = container.dataset.defaultText || '';
-            
-            // Only set default text if the field is empty
-            if (textarea && !textarea.value.trim()) {
-                textarea.value = defaultText;
-            }
-            if (preview && !preview.textContent.trim()) {
-                preview.textContent = defaultText;
-            }
-        });
         
         // Check for existing submission
         await checkExistingSubmission(selectedId);
