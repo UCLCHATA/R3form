@@ -54,14 +54,14 @@ body {
 
 /* Muted state for content before CHATA ID selection */
 .form-content.muted,
-.pdf-container.muted,
+.pdf-viewers.muted,
 .button-group.muted {
     position: relative;
     pointer-events: none;
 }
 
 .form-content.muted::before,
-.pdf-container.muted::before,
+.pdf-viewers.muted::before,
 .button-group.muted::before {
     content: '';
     position: absolute;
@@ -69,7 +69,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(255, 255, 255, 0.75);  /* Reduced opacity to 75% */
     z-index: 10;
     backdrop-filter: blur(2px);
 }
@@ -781,7 +781,7 @@ body {
 }
 
 .default-text ul li::before {
-    content: '\2022';  /* Unicode for  */
+    content: '\2022';  /* Unicode for • */
     display: inline-block;
     position: absolute;
     left: 0.4em;
@@ -853,53 +853,21 @@ button {
 
 /* Header and Footer */
 .site-header {
-    background-color: #2d3748 !important;
-    border-bottom: 1px solid #4a5568;
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+    position: relative;
+    z-index: 1;
 }
 
 .site-footer {
-    background-color: #f0f4f8 !important;
-    border-top: 1px solid #e1e8ed;
-    padding: 1rem;
-    position: sticky;
-    bottom: 0;
-    z-index: 100;
-    width: 100%;
-    height: 48px; /* Reduced from 60px by 20% */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex: 1;
-}
-
-.site-footer p {
-    color: #4a5568;
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.2;
-}
-
-.site-footer .contact-text {
-    font-size: 0.8rem;
-    color: #718096;
-}
-
-.footer-logo {
-    height: 38px; /* 80% of new footer height (48px) */
-    width: auto;
-    object-fit: contain;
-    margin: 0 1rem;
+    background: #f8f9fa;
+    padding: 0.5rem;
+    text-align: center;
+    height: 40px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Utility classes */
@@ -1738,76 +1706,4 @@ button {
 .status-item select.asc-confirmed {
     color: #28a745;
     font-weight: bold;
-}
-
-.site-header {
-    background-color: #2d3748 !important;
-    border-bottom: 1px solid #4a5568;
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    background-color: #2d3748 !important;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-controls {
-    background-color: #2d3748 !important;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.site-header h1 {
-    color: #ffffff;
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.site-footer {
-    background-color: #f0f4f8 !important;
-    border-top: 1px solid #e1e8ed;
-    padding: 1rem;
-    text-align: center;
-    position: sticky;
-    bottom: 0;
-    z-index: 100;
-    width: 100%;
-    height: 48px; /* Reduced from 60px by 20% */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex: 1;
-}
-
-.site-footer p {
-    color: #4a5568;
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.2;
-}
-
-.site-footer .contact-text {
-    font-size: 0.8rem;
-    color: #718096;
-}
-
-.footer-logo {
-    height: 38px; /* 80% of new footer height (48px) */
-    width: auto;
-    object-fit: contain;
-    margin: 0 1rem;
 }

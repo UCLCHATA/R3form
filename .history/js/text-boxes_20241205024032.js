@@ -8,7 +8,6 @@ class TextBox {
             maxHeight: '80vh',
             ...options
         };
-        this.bulletPoint = '• ';
         
         this.init();
     }
@@ -28,11 +27,6 @@ class TextBox {
         // Set default text if provided
         if (this.options.defaultText) {
             this.textArea.value = this.options.defaultText;
-        }
-
-        // Ensure initial bullet point if empty
-        if (!this.textArea.value) {
-            this.textArea.value = this.bulletPoint;
         }
     }
     
@@ -102,12 +96,6 @@ class TextBox {
                 this.textArea.value = this.modalTextArea.value;
             }
         });
-
-        // Add bullet point functionality
-        this.textArea.addEventListener('keydown', this.handleKeyDown.bind(this));
-        this.modalTextArea.addEventListener('keydown', this.handleKeyDown.bind(this));
-        this.textArea.addEventListener('paste', this.handlePaste.bind(this));
-        this.modalTextArea.addEventListener('paste', this.handlePaste.bind(this));
         
         // Modal controls
         this.modal.querySelector('.modal-close').addEventListener('click', () => {
@@ -128,77 +116,6 @@ class TextBox {
                 this.closeModal();
             }
         });
-    }
-
-    handleKeyDown(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            
-            const textarea = event.target;
-            const cursorPosition = textarea.selectionStart;
-            const currentContent = textarea.value;
-            
-            // Get the current line
-            const beforeCursor = currentContent.substring(0, cursorPosition);
-            const afterCursor = currentContent.substring(cursorPosition);
-            const currentLine = beforeCursor.split('\n').pop();
-            
-            // Check if current line is empty (just a bullet point)
-            if (currentLine.trim() === this.bulletPoint.trim()) {
-                // Remove the bullet point from the empty line
-                const lastNewLine = beforeCursor.lastIndexOf('\n');
-                const newContent = currentContent.substring(0, lastNewLine) + afterCursor;
-                textarea.value = newContent;
-                textarea.selectionStart = textarea.selectionEnd = lastNewLine === -1 ? 0 : lastNewLine;
-            } else {
-                // Add new line with bullet point
-                const newContent = beforeCursor + '\n' + this.bulletPoint + afterCursor;
-                textarea.value = newContent;
-                textarea.selectionStart = textarea.selectionEnd = cursorPosition + this.bulletPoint.length + 1;
-            }
-            
-            // Sync between textareas if in modal
-            if (textarea === this.modalTextArea && TextBox.activeInstance === this) {
-                this.textArea.value = textarea.value;
-            } else if (textarea === this.textArea && TextBox.activeInstance === this) {
-                this.modalTextArea.value = textarea.value;
-            }
-        }
-    }
-
-    handlePaste(event) {
-        event.preventDefault();
-        
-        const textarea = event.target;
-        const cursorPosition = textarea.selectionStart;
-        const currentContent = textarea.value;
-        
-        // Get pasted content
-        let pastedContent = (event.clipboardData || window.clipboardData).getData('text');
-        
-        // Process pasted content: add bullet points to each line if needed
-        pastedContent = pastedContent.split('\n').map(line => {
-            line = line.trim();
-            if (line && !line.startsWith(this.bulletPoint)) {
-                return this.bulletPoint + line;
-            }
-            return line;
-        }).join('\n');
-        
-        // Insert the processed content
-        const beforeCursor = currentContent.substring(0, cursorPosition);
-        const afterCursor = currentContent.substring(cursorPosition);
-        const newContent = beforeCursor + pastedContent + afterCursor;
-        
-        textarea.value = newContent;
-        textarea.selectionStart = textarea.selectionEnd = cursorPosition + pastedContent.length;
-        
-        // Sync between textareas if in modal
-        if (textarea === this.modalTextArea && TextBox.activeInstance === this) {
-            this.textArea.value = textarea.value;
-        } else if (textarea === this.textArea && TextBox.activeInstance === this) {
-            this.modalTextArea.value = textarea.value;
-        }
     }
     
     openModal() {
@@ -242,14 +159,9 @@ class TextBox {
     }
     
     setValue(value) {
-        // Ensure value starts with bullet point if not empty
-        if (value && !value.startsWith(this.bulletPoint)) {
-            value = this.bulletPoint + value;
-        }
-        
-        this.textArea.value = value || this.bulletPoint;
+        this.textArea.value = value;
         if (TextBox.activeInstance === this && this.modal.classList.contains('active')) {
-            this.modalTextArea.value = this.textArea.value;
+            this.modalTextArea.value = value;
         }
     }
 }

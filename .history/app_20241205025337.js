@@ -342,7 +342,6 @@ async function handleChataIdChange(event) {
     const formContent = document.querySelector('.form-content');
     const pdfContainer = document.querySelector('.pdf-container');
     const buttonGroup = document.querySelector('.button-group');
-    const refreshButton = document.getElementById('refresh-data');
     
     if (selectedData) {
         // Remove muted state when CHATA ID is selected
@@ -375,13 +374,6 @@ async function handleChataIdChange(event) {
         formContent?.classList.add('muted');
         pdfContainer?.classList.add('muted');
         buttonGroup?.classList.add('muted');
-        
-        // Reset refresh button to default state
-        if (refreshButton) {
-            refreshButton.classList.remove('warning');
-            refreshButton.innerHTML = '<i class="material-icons">refresh</i>';
-        }
-        
         resetPdfViewers();
         removeWarnings();
     }

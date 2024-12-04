@@ -340,15 +340,14 @@ async function handleChataIdChange(event) {
     const selectedId = event.target.value;
     const selectedData = chataData.find(item => item.id === selectedId);
     const formContent = document.querySelector('.form-content');
-    const pdfContainer = document.querySelector('.pdf-container');
+    const pdfViewers = document.querySelector('.pdf-viewers');
     const buttonGroup = document.querySelector('.button-group');
-    const refreshButton = document.getElementById('refresh-data');
     
     if (selectedData) {
         // Remove muted state when CHATA ID is selected
-        formContent?.classList.remove('muted');
-        pdfContainer?.classList.remove('muted');
-        buttonGroup?.classList.remove('muted');
+        formContent.classList.remove('muted');
+        pdfViewers.classList.remove('muted');
+        buttonGroup.classList.remove('muted');
         
         // Check for existing submission
         await checkExistingSubmission(selectedId);
@@ -372,16 +371,9 @@ async function handleChataIdChange(event) {
         }
     } else {
         // Add muted state when no CHATA ID is selected
-        formContent?.classList.add('muted');
-        pdfContainer?.classList.add('muted');
-        buttonGroup?.classList.add('muted');
-        
-        // Reset refresh button to default state
-        if (refreshButton) {
-            refreshButton.classList.remove('warning');
-            refreshButton.innerHTML = '<i class="material-icons">refresh</i>';
-        }
-        
+        formContent.classList.add('muted');
+        pdfViewers.classList.add('muted');
+        buttonGroup.classList.add('muted');
         resetPdfViewers();
         removeWarnings();
     }
@@ -867,12 +859,9 @@ async function initializeApp() {
     try {
         // Set initial muted state
         const formContent = document.querySelector('.form-content');
-        const pdfContainer = document.querySelector('.pdf-container');
-        const buttonGroup = document.querySelector('.button-group');
-        
-        if (formContent) formContent.classList.add('muted');
-        if (pdfContainer) pdfContainer.classList.add('muted');
-        if (buttonGroup) buttonGroup.classList.add('muted');
+        if (formContent) {
+            formContent.classList.add('muted');
+        }
 
         // Check if we have sufficient cached data
         if (isCacheValid(CACHE_KEYS.CHATA_DATA)) {
