@@ -73,23 +73,114 @@ body {
     padding: 12px;
     position: relative;
     cursor: pointer;
-    user-select: none; /* Prevent text selection on double click */
+    user-select: none;
+    transition: all 0.3s ease-in-out;
+    min-height: fit-content;
+    height: auto;
+    max-height: 80vh;
+    overflow: visible;
+    margin-bottom: 1rem;
 }
 
-/* Hover instruction for entire section */
+/* Field container */
+.expandable-field {
+    position: relative;
+    margin-bottom: 1rem;
+    min-height: fit-content;
+    height: auto;
+    overflow: visible;
+}
+
+/* Text input area */
+.field-preview {
+    width: 100%;
+    min-height: 100px;  /* Default minimum height */
+    max-height: 80vh;   /* Maximum 80% of viewport height */
+    height: auto;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.field-preview:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.field-preview:hover {
+    cursor: ns-resize;
+}
+
+.field-preview::after {
+    content: '⋮⋮';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 14px;
+    color: #888;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    transform: rotate(90deg);
+}
+
+.field-preview:hover::after {
+    opacity: 1;
+}
+
+/* Container expansion when field is focused */
+.section.expandable-section:has(.field-preview:focus),
+.section.expandable-section.expanded {
+    height: auto;
+    min-height: fit-content;
+    max-height: 80vh;
+    overflow: visible;
+}
+
+/* Ensure the field preview can expand within the container */
+.section.expandable-section:has(.field-preview:focus) .field-preview,
+.section.expandable-section.expanded .field-preview {
+    max-height: calc(80vh - 24px) !important; /* Accounting for padding */
+}
+
+/* Grid layout for the form sections */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+    align-items: start;
+}
+
+/* Ensure each section in the grid can expand independently */
+.form-grid .section.expandable-section {
+    height: fit-content;
+    min-height: fit-content;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Double-click instruction */
 .section.expandable-section::after {
     content: 'Double-click to expand';
     position: absolute;
     top: -20px;
     left: 50%;
-    transform: translateX(-50%) translateY(10px);
+    transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.75rem;
     opacity: 0;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease;
     pointer-events: none;
     white-space: nowrap;
     z-index: 1;
@@ -98,13 +189,6 @@ body {
 .section.expandable-section:hover::after {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
-}
-
-/* Make textarea not affect pointer events of parent */
-.field-preview {
-    cursor: text;
-    position: relative;
-    z-index: 0;
 }
 
 /* Subtle hover effect for the entire section */
@@ -344,16 +428,13 @@ body {
 
 /* Status group - tighter */
 .status-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 4px;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
 }
 
 .status-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex: 1;
 }
 
 .status-item select {
@@ -479,67 +560,145 @@ body {
 
 .pdf-viewer {
     flex: 1;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-bottom: 8px;
-}
-
-.pdf-viewer h3 {
-    padding: 8px 12px;
-    margin: 0;
     background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    font-size: 0.9rem;
-    color: #2c3e50;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.pdf-viewer h3 i {
-    font-size: 1.1rem;
-    color: #6c757d;
-}
-
-.pdf-viewer iframe {
-    flex: 1;
-    width: 100%;
-    border: none;
-    min-height: 0;
-    background: #fff;
-}
-
-/* Custom scrollbar for PDF viewer */
-.pdf-viewer::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.pdf-viewer::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.pdf-viewer::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.1);
+    padding: 4px;
     border-radius: 4px;
 }
 
-.pdf-viewer::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+.pdf-frame {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    background: white;
 }
 
-/* Hide scrollbar when not hovering */
-.pdf-viewer {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
+.pdf-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.9rem;
 }
 
-.pdf-viewer:hover {
-    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+/* Header controls and warnings */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.existing-submission-warning {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    font-size: 0.75rem;
+    color: #dc3545;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease-in-out;
+    background: rgba(220, 53, 69, 0.1);
+    padding: 2px 4px;
+    border-radius: 2px;
+    transform: translateY(-5px);
+    pointer-events: none;
+}
+
+.existing-submission-warning.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.existing-submission-warning.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+}
+
+.existing-submission-warning i {
+    font-size: 14px;
+}
+
+/* Refresh/warning button hover behavior */
+.refresh-button.warning:hover + .existing-submission-warning {
+    opacity: 1;
+}
+
+/* Submit warning styles */
+.submit-warning {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    font-size: 0.75rem;
+    color: #856404;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease-in-out;
+    background: rgba(255, 193, 7, 0.1);
+    padding: 2px 4px;
+    border-radius: 2px;
+    transform: translateY(5px);
+    pointer-events: none;
+}
+
+.submit-warning.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.submit-warning.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+}
+
+/* Hover triggers for submit warning */
+.submit-button:hover ~ .submit-warning,
+.refresh-button.warning:hover ~ .submit-warning {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Button group adjustments */
+.button-group {
+    position: relative;
+    padding: 4px;
+    background: linear-gradient(to bottom, rgba(248,249,250,0.9), #f8f9fa);
+    border-top: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+/* Refresh button warning state */
+.refresh-button.warning {
+    color: #dc3545;
+    cursor: help;
+}
+
+.refresh-button.warning:hover {
+    color: #dc3545;
+    background: none;
 }
 
 /* Modal overlay system */
@@ -557,30 +716,39 @@ body {
 
 .modal-container {
     position: fixed;
-    top: 60px; /* Below header */
-    right: 20px; /* Aligned to right */
-    width: 45%; /* Match form width */
-    min-height: fit-content;
-    max-height: 80vh; /* Maximum 80% of viewport height */
+    top: 50%;
+    right: 2rem;
+    transform: translate(0, -50%);
     background: white;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 10001;
+    border-radius: 8px;
+    border: 2px solid;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: none;
-    overflow: hidden;
+    flex-direction: column;
+    width: 45%;
+    min-height: 300px;
+    max-height: 75vh;
+    height: auto;
+    z-index: 1000;
+    resize: vertical;
+    overflow: auto;
+    transition: border-color 0.3s ease;
+    left: auto;
+    max-width: 45%;
 }
 
 .modal-container.active {
     display: flex;
-    flex-direction: column;
 }
 
 .modal-header {
     padding: 12px 16px;
-    border-bottom: 1px solid #dee2e6;
     background: #f8f9fa;
     border-radius: 6px 6px 0 0;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .modal-header h4 {
@@ -591,31 +759,50 @@ body {
 }
 
 .modal-content {
-    padding: 16px;
     flex: 1;
-    overflow: hidden;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: visible;
+    min-height: 200px;
+    max-height: 70vh;
 }
 
 .expandable-text {
     width: 100%;
-    height: 100%;
-    padding: 12px;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    min-height: 200px;
+    height: auto;
+    padding: 0.5rem;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    resize: none;
-    overflow-y: auto;
-    background: #fff;
-    color: #2c3e50;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
     font-family: inherit;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .expandable-text:focus {
     outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Modal color states based on section */
+.modal-container[data-field-id="clinical-observations"] {
+    border-color: hsl(var(--color-green-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+
+.modal-container[data-field-id="strengths-abilities"] {
+    border-color: hsl(var(--color-yellow-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+
+.modal-container[data-field-id="priority-support"] {
+    border-color: hsl(var(--color-red-hue), var(--saturation-expanded), var(--lightness-normal));
+}
+
+.modal-container[data-field-id="support-recommendations"] {
+    border-color: hsl(var(--color-purple-hue), var(--saturation-expanded), var(--lightness-normal));
 }
 
 /* Scrollbar styling */
@@ -848,33 +1035,22 @@ button {
 .referrals-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    padding: 3px;
-    background: #fff;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .referral-other-row {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 2px;
-}
-
-.referral-other-row label {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    white-space: nowrap;
+    gap: 1rem;
 }
 
 .referral-other-input {
     flex: 1;
-    padding: 0.25rem;
+    padding: 0.5rem;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    font-size: 0.9rem;
 }
 
 /* Button group */
@@ -1408,7 +1584,7 @@ button {
 .modal-content {
     padding: 16px;
     flex: 1;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     background: #fff;
 }
@@ -1456,4 +1632,342 @@ button {
 .modal-container .expandable-text {
     color: #212529;
     opacity: 1;
+}
+
+/* Header controls */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Refresh button */
+.refresh-button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+    color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+}
+
+.refresh-button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.refresh-button.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Existing submission warning */
+.existing-submission-warning {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: #dc3545;
+    opacity: 0.85;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.existing-submission-warning i {
+    font-size: 16px;
+}
+
+.existing-submission-warning span {
+    white-space: nowrap;
+}
+
+/* Submission warnings */
+.existing-submission-warning,
+.submit-warning {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    animation: fadeIn 0.3s ease;
+}
+
+.existing-submission-warning {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.submit-warning {
+    color: #856404;
+    background: rgba(255, 193, 7, 0.1);
+    margin-bottom: 8px;
+}
+
+.existing-submission-warning i,
+.submit-warning i {
+    font-size: 16px;
+}
+
+.existing-submission-warning span,
+.submit-warning span {
+    white-space: nowrap;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ASC Status dropdown styling */
+select[name="asc_status"] option {
+    padding: 8px;
+    font-size: 0.9rem;
+}
+
+/* Positive diagnosis - green */
+select[name="asc_status"] option[value="asc_confirmed"] {
+    color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+/* Negative diagnosis - red */
+select[name="asc_status"] option[value="asc_not_indicated"] {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Default option */
+select[name="asc_status"] option[value=""] {
+    color: #6c757d;
+}
+
+/* Selected state */
+select[name="asc_status"] {
+    color: inherit;
+}
+
+select[name="asc_status"]:has(option[value="asc_confirmed"]:checked) {
+    color: #198754;
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+select[name="asc_status"]:has(option[value="asc_not_indicated"]:checked) {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.field-preview {
+    width: 100%;
+    min-height: 82px;
+    padding: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    overflow: auto;
+    white-space: pre-wrap;
+    transition: height 0.3s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+    max-height: 80vh;
+}
+
+.expandable-section {
+    position: relative;
+    cursor: pointer;
+}
+
+.expandable-section:hover::after {
+    content: 'Double-click to expand';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.expandable-section:hover::after {
+    opacity: 1;
+}
+
+/* Single backdrop for expanded state */
+.backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.backdrop.active {
+    display: block;
+}
+
+/* Remove any other overlay/instruction styles */
+.section.expandable-section::after,
+.modal-backdrop,
+.expandable-section::before {
+    display: none !important;
+}
+
+/* Modal buttons */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    margin-top: 8px;
+    background: white;
+}
+
+.save-close-btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #28a745;
+    color: white;
+}
+
+.save-close-btn:hover {
+    background: #218838;
+}
+
+/* Remove old button styles */
+.save-btn, .close-btn {
+    display: none;
+}
+
+/* Update modal container for border color */
+.modal-container {
+    border: 2px solid;  /* Color will be set dynamically */
+    transition: border-color 0.3s ease;
+}
+
+.modal-header {
+    border-bottom: 2px solid;  /* Color will be set dynamically */
+    transition: border-color 0.3s ease;
+}
+
+/* Modal container adjustments */
+.modal-container {
+    max-height: 70vh; /* Reduced from 80vh */
+}
+
+/* Modal container */
+.modal-container {
+    position: fixed;
+    top: 50%;
+    right: 2rem;
+    transform: translate(0, -50%);
+    background: white;
+    border-radius: 8px;
+    border: 2px solid;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    width: 45%;
+    min-height: 300px;
+    max-height: 75vh;
+    height: auto;
+    z-index: 1000;
+    resize: vertical;
+    overflow: auto;
+    transition: border-color 0.3s ease;
+    left: auto;
+    max-width: 45%;
+}
+
+.modal-container.active {
+    display: flex;
+}
+
+/* Modal header */
+.modal-header {
+    padding: 1rem;
+    border-bottom: 2px solid;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.modal-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Modal buttons */
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 8px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    margin-top: 8px;
+    background: white;
+}
+
+/* Resize handle indicator */
+.modal-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
+    cursor: row-resize;
+}
+
+/* Expandable field containers - add border colors */
+.expandable-field[data-field-id="clinical-observations"] {
+    border-color: #4CAF50;
+}
+
+.expandable-field[data-field-id="strengths-abilities"] {
+    border-color: #2196F3;
+}
+
+.expandable-field[data-field-id="priority-support"] {
+    border-color: #FF9800;
+}
+
+.expandable-field[data-field-id="support-recommendations"] {
+    border-color: #9C27B0;
 }
