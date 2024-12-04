@@ -73,114 +73,23 @@ body {
     padding: 12px;
     position: relative;
     cursor: pointer;
-    user-select: none;
-    transition: all 0.3s ease-in-out;
-    min-height: fit-content;
-    height: auto;
-    max-height: 80vh;
-    overflow: visible;
-    margin-bottom: 1rem;
+    user-select: none; /* Prevent text selection on double click */
 }
 
-/* Field container */
-.expandable-field {
-    position: relative;
-    margin-bottom: 1rem;
-    min-height: fit-content;
-    height: auto;
-    overflow: visible;
-}
-
-/* Text input area */
-.field-preview {
-    width: 100%;
-    min-height: 100px;  /* Default minimum height */
-    max-height: 80vh;   /* Maximum 80% of viewport height */
-    height: auto;
-    padding: 0.5rem;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    resize: vertical;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-.field-preview:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-}
-
-.field-preview:hover {
-    cursor: ns-resize;
-}
-
-.field-preview::after {
-    content: '⋮⋮';
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    font-size: 14px;
-    color: #888;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    transform: rotate(90deg);
-}
-
-.field-preview:hover::after {
-    opacity: 1;
-}
-
-/* Container expansion when field is focused */
-.section.expandable-section:has(.field-preview:focus),
-.section.expandable-section.expanded {
-    height: auto;
-    min-height: fit-content;
-    max-height: 80vh;
-    overflow: visible;
-}
-
-/* Ensure the field preview can expand within the container */
-.section.expandable-section:has(.field-preview:focus) .field-preview,
-.section.expandable-section.expanded .field-preview {
-    max-height: calc(80vh - 24px) !important; /* Accounting for padding */
-}
-
-/* Grid layout for the form sections */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin: 1rem 0;
-    align-items: start;
-}
-
-/* Ensure each section in the grid can expand independently */
-.form-grid .section.expandable-section {
-    height: fit-content;
-    min-height: fit-content;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Double-click instruction */
+/* Hover instruction for entire section */
 .section.expandable-section::after {
     content: 'Double-click to expand';
     position: absolute;
     top: -20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(10px);
     background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.75rem;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
     pointer-events: none;
     white-space: nowrap;
     z-index: 1;
@@ -189,6 +98,13 @@ body {
 .section.expandable-section:hover::after {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+/* Make textarea not affect pointer events of parent */
+.field-preview {
+    cursor: text;
+    position: relative;
+    z-index: 0;
 }
 
 /* Subtle hover effect for the entire section */
@@ -428,13 +344,16 @@ body {
 
 /* Status group - tighter */
 .status-group {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
 }
 
 .status-item {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .status-item select {
@@ -716,29 +635,24 @@ body {
 
 .modal-container {
     position: fixed;
-    top: 50%;
-    right: 2rem;
-    transform: translate(0, -50%);
-    background: white;
-    border-radius: 8px;
-    border: 2px solid;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: none;
-    flex-direction: column;
+    top: 60px;
+    right: 20px;
     width: 45%;
-    min-height: 300px;
-    max-height: 75vh;
-    height: auto;
-    z-index: 1000;
-    resize: vertical;
-    overflow: auto;
-    transition: border-color 0.3s ease;
-    left: auto;
-    max-width: 45%;
+    min-height: 150px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    overflow: hidden;
+    border: var(--border-expanded) solid;
+    transition: min-height 0.3s ease-in-out;
 }
 
 .modal-container.active {
     display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
@@ -759,29 +673,27 @@ body {
 }
 
 .modal-content {
+    padding: 16px;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    overflow: visible;
-    min-height: 200px;
-    max-height: 70vh;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
 }
 
 .expandable-text {
     width: 100%;
-    min-height: 200px;
-    height: auto;
-    padding: 0.5rem;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    min-height: 100px;
+    padding: 12px;
+    font-size: 0.95rem;
     line-height: 1.5;
-    resize: vertical;
-    font-family: inherit;
-    margin: 0;
-    flex: 1;
+    border: none;
+    border-radius: 4px;
+    resize: none;
     overflow-y: auto;
+    background: #fff;
+    color: #2c3e50;
+    font-family: inherit;
+    transition: min-height 0.3s ease-in-out;
 }
 
 .expandable-text:focus {
@@ -1035,22 +947,33 @@ button {
 .referrals-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: 0.5rem;
+    gap: 4px;
+    padding: 3px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 0.8rem;
 }
 
 .referral-other-row {
-    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+    margin-top: 2px;
+}
+
+.referral-other-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
 }
 
 .referral-other-input {
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.25rem;
     border: 1px solid #dee2e6;
     border-radius: 4px;
+    font-size: 0.9rem;
 }
 
 /* Button group */
@@ -1584,7 +1507,7 @@ button {
 .modal-content {
     padding: 16px;
     flex: 1;
-    overflow: visible;
+    overflow: hidden;
     position: relative;
     background: #fff;
 }
@@ -1731,243 +1654,4 @@ button {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-/* ASC Status dropdown styling */
-select[name="asc_status"] option {
-    padding: 8px;
-    font-size: 0.9rem;
-}
-
-/* Positive diagnosis - green */
-select[name="asc_status"] option[value="asc_confirmed"] {
-    color: #198754;
-    background-color: rgba(25, 135, 84, 0.1);
-}
-
-/* Negative diagnosis - red */
-select[name="asc_status"] option[value="asc_not_indicated"] {
-    color: #dc3545;
-    background-color: rgba(220, 53, 69, 0.1);
-}
-
-/* Default option */
-select[name="asc_status"] option[value=""] {
-    color: #6c757d;
-}
-
-/* Selected state */
-select[name="asc_status"] {
-    color: inherit;
-}
-
-select[name="asc_status"]:has(option[value="asc_confirmed"]:checked) {
-    color: #198754;
-    border-color: #198754;
-    background-color: rgba(25, 135, 84, 0.1);
-}
-
-select[name="asc_status"]:has(option[value="asc_not_indicated"]:checked) {
-    color: #dc3545;
-    border-color: #dc3545;
-    background-color: rgba(220, 53, 69, 0.1);
-}
-
-.field-preview {
-    width: 100%;
-    min-height: 82px;
-    padding: 12px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    resize: vertical;
-    overflow: auto;
-    white-space: pre-wrap;
-    transition: height 0.3s ease;
-    font-family: inherit;
-    box-sizing: border-box;
-    max-height: 80vh;
-}
-
-.expandable-section {
-    position: relative;
-    cursor: pointer;
-}
-
-.expandable-section:hover::after {
-    content: 'Double-click to expand';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-.expandable-section:hover::after {
-    opacity: 1;
-}
-
-/* Single backdrop for expanded state */
-.backdrop {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-
-.backdrop.active {
-    display: block;
-}
-
-/* Remove any other overlay/instruction styles */
-.section.expandable-section::after,
-.modal-backdrop,
-.expandable-section::before {
-    display: none !important;
-}
-
-/* Modal buttons */
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    padding: 8px;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    margin-top: 8px;
-    background: white;
-}
-
-.save-close-btn {
-    padding: 6px 16px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: #28a745;
-    color: white;
-}
-
-.save-close-btn:hover {
-    background: #218838;
-}
-
-/* Remove old button styles */
-.save-btn, .close-btn {
-    display: none;
-}
-
-/* Update modal container for border color */
-.modal-container {
-    border: 2px solid;  /* Color will be set dynamically */
-    transition: border-color 0.3s ease;
-}
-
-.modal-header {
-    border-bottom: 2px solid;  /* Color will be set dynamically */
-    transition: border-color 0.3s ease;
-}
-
-/* Modal container adjustments */
-.modal-container {
-    max-height: 70vh; /* Reduced from 80vh */
-}
-
-/* Modal container */
-.modal-container {
-    position: fixed;
-    top: 50%;
-    right: 2rem;
-    transform: translate(0, -50%);
-    background: white;
-    border-radius: 8px;
-    border: 2px solid;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: none;
-    flex-direction: column;
-    width: 45%;
-    min-height: 300px;
-    max-height: 75vh;
-    height: auto;
-    z-index: 1000;
-    resize: vertical;
-    overflow: auto;
-    transition: border-color 0.3s ease;
-    left: auto;
-    max-width: 45%;
-}
-
-.modal-container.active {
-    display: flex;
-}
-
-/* Modal header */
-.modal-header {
-    padding: 1rem;
-    border-bottom: 2px solid;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: border-color 0.3s ease;
-}
-
-.modal-header h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-/* Modal buttons */
-.modal-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    padding: 8px;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    margin-top: 8px;
-    background: white;
-}
-
-/* Resize handle indicator */
-.modal-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 4px;
-    background: #ccc;
-    border-radius: 2px;
-    cursor: row-resize;
-}
-
-/* Expandable field containers - add border colors */
-.expandable-field[data-field-id="clinical-observations"] {
-    border-color: #4CAF50;
-}
-
-.expandable-field[data-field-id="strengths-abilities"] {
-    border-color: #2196F3;
-}
-
-.expandable-field[data-field-id="priority-support"] {
-    border-color: #FF9800;
-}
-
-.expandable-field[data-field-id="support-recommendations"] {
-    border-color: #9C27B0;
 }
