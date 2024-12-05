@@ -1554,16 +1554,16 @@ button {
 
 /* Modal header icon colors - more subtle */
 .modal-container[data-field-id="clinical-observations"] .modal-header i {
-    color: hsl(var(--color-green-hue), var(--saturation-expanded), var(--lightness-normal));
+    color: #4CAF50;
 }
 .modal-container[data-field-id="strengths-abilities"] .modal-header i {
-    color: hsl(var(--color-yellow-hue), var(--saturation-expanded), var(--lightness-normal));
+    color: #FF9800;
 }
 .modal-container[data-field-id="priority-support"] .modal-header i {
-    color: hsl(var(--color-red-hue), var(--saturation-expanded), var(--lightness-normal));
+    color: #F44336;
 }
 .modal-container[data-field-id="support-recommendations"] .modal-header i {
-    color: hsl(var(--color-purple-hue), var(--saturation-expanded), var(--lightness-normal));
+    color: #9C27B0;
 }
 
 .modal-header i {
