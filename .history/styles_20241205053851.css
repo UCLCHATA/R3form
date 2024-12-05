@@ -29,27 +29,6 @@ body {
     gap: 12px;
     padding: 8px;
     overflow: hidden;
-    position: relative;
-}
-
-/* Single overlay for the entire main area */
-.main-container.muted::before {
-    content: '';
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(2px);
-    z-index: 10;
-}
-
-/* Remove individual element overlays */
-.form-content.muted::before,
-.pdf-container.muted::before,
-.button-group.muted::before {
-    display: none;
 }
 
 /* Form container */
@@ -66,11 +45,12 @@ body {
 /* Form content */
 .form-content {
     flex: 1;
-    overflow-y: auto;
-    padding: 4px 4px 40px 4px;
     display: flex;
     flex-direction: column;
-    background: #f5f6f8;
+    position: relative;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1rem;
 }
 
 /* Muted state for content before CHATA ID selection */
@@ -80,17 +60,19 @@ body {
     position: relative;
 }
 
-.form-content.muted::after,
-.pdf-container.muted::after,
-.button-group.muted::after {
+.form-content.muted::before,
+.pdf-container.muted::before,
+.button-group.muted::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(2px);
-    z-index: 101;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    pointer-events: none;
 }
 
 /* Grid layout */
@@ -1829,4 +1811,16 @@ button {
     width: auto;
     object-fit: contain;
     margin: 0 1rem;
+}
+
+.text-box-container .text-area {
+    min-height: 100px;
+    max-height: 300px;
+    transition: all 0.3s ease;
+}
+
+/* Reset text area size when empty */
+.text-box-container .text-area:empty,
+.text-box-container .text-area[value=""] {
+    height: 100px !important;
 }

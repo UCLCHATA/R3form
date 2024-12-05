@@ -893,18 +893,16 @@ function clearForm() {
     }
     if (adhdStatus) adhdStatus.value = '';
 
-    // Clear all text areas and reset sizes
+    // Clear all text areas and previews
     document.querySelectorAll('.text-box-container').forEach(container => {
         const textarea = container.querySelector('.text-area');
         const preview = container.querySelector('.field-preview');
         
         if (textarea) {
             textarea.value = '';
-            textarea.style.height = '100px'; // Reset to default height
         }
         if (preview) {
-            preview.textContent = '';
-            preview.style.height = '100px'; // Reset preview height as well
+            preview.textContent = preview.dataset.defaultText || '';
         }
     });
 

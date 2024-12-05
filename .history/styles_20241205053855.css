@@ -29,27 +29,6 @@ body {
     gap: 12px;
     padding: 8px;
     overflow: hidden;
-    position: relative;
-}
-
-/* Single overlay for the entire main area */
-.main-container.muted::before {
-    content: '';
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(2px);
-    z-index: 10;
-}
-
-/* Remove individual element overlays */
-.form-content.muted::before,
-.pdf-container.muted::before,
-.button-group.muted::before {
-    display: none;
 }
 
 /* Form container */
@@ -78,19 +57,21 @@ body {
 .pdf-container.muted,
 .button-group.muted {
     position: relative;
+    pointer-events: none;
 }
 
-.form-content.muted::after,
-.pdf-container.muted::after,
-.button-group.muted::after {
+.form-content.muted::before,
+.pdf-container.muted::before,
+.button-group.muted::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    z-index: 10;
     backdrop-filter: blur(2px);
-    z-index: 101;
 }
 
 /* Grid layout */
