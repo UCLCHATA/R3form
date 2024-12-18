@@ -604,48 +604,27 @@ async function testApiEndpoints() {
 // Function to make Apps Script calls with proper delays
 async function makeAppsScriptCall(url, chataId) {
     return new Promise((resolve, reject) => {
-        const callbackName = 'callback_' + Math.round(100000 * Math.random());
-        let timeoutId;
-
-        // Create callback function
+        const script = document.createElement('script');
+        const callbackName = 'callback_' + Date.now();
+        
         window[callbackName] = function(response) {
-            // Clear timeout
-            if (timeoutId) clearTimeout(timeoutId);
-            
-            // Clean up
             document.head.removeChild(script);
             delete window[callbackName];
-            
-            // Handle response
-            if (response.success) {
-                resolve(response);
-            } else {
-                reject(new Error(response.error || 'Unknown error'));
-            }
+            resolve(response);
         };
 
-        // Create script element
-        const script = document.createElement('script');
-        script.src = `${url}?callback=${callbackName}&chataId=${encodeURIComponent(chataId)}`;
+        // Ensure CHATA ID is properly encoded in the URL
+        const encodedChataId = encodeURIComponent(chataId);
+        script.src = `${url}?callback=${callbackName}&chataId=${encodedChataId}`;
+        console.log(`Making Apps Script call to: ${script.src}`);
         
-        // Add error handling
         script.onerror = () => {
-            if (timeoutId) clearTimeout(timeoutId);
             document.head.removeChild(script);
             delete window[callbackName];
             reject(new Error('Script load failed'));
         };
 
-        // Set timeout
-        timeoutId = setTimeout(() => {
-            document.head.removeChild(script);
-            delete window[callbackName];
-            reject(new Error('Request timed out'));
-        }, 180000); // 3 minutes timeout
-
-        // Add script to document
         document.head.appendChild(script);
-        console.log(`Making Apps Script call to: ${script.src}`);
     });
 }
 
@@ -688,10 +667,25 @@ async function handleSubmit() {
         const notification = createProgressNotification();
         
         try {
-            // 1. Submit form data
+            // 1. Check for existing entry
+            updateProgress(notification, 'submission', 'Checking for existing entry...');
+            const existingResponse = await fetch(R3_FORM_API);
+            const existingData = await existingResponse.json();
+            const existingEntry = existingData.r3Form?.find(entry => entry.chataId === selectedChataId);
+
+            let submitMethod = 'POST';
+            let submitUrl = R3_FORM_API;
+
+            if (existingEntry) {
+                submitMethod = 'PUT';
+                submitUrl = `${R3_FORM_API}/${existingEntry.id}`;
+                console.log('Updating existing entry:', existingEntry.id);
+            }
+
+            // 2. Submit/Update form data
             updateProgress(notification, 'submission', 'Submitting form data...');
-            const response = await fetch(R3_FORM_API, {
-                method: 'POST',
+            const response = await fetch(submitUrl, {
+                method: submitMethod,
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -702,7 +696,7 @@ async function handleSubmit() {
                 throw new Error('Form submission failed');
             }
 
-            // 2. Wait for data sync (with retries)
+            // 2. Verify data exists in R3_Form (with retries)
             updateProgress(notification, 'waiting', 'Verifying data submission...');
             let dataVerified = false;
             let attempts = 0;
@@ -713,9 +707,15 @@ async function handleSubmit() {
                     const verifyResponse = await fetch(R3_FORM_API);
                     const verifyData = await verifyResponse.json();
                     
-                    if (verifyData.r3Form?.some(entry => entry.chataId === selectedChataId)) {
+                    console.log('Verification attempt data:', {
+                        attempt: attempts + 1,
+                        foundEntries: verifyData.r3Form?.length || 0,
+                        searchingFor: selectedChataId
+                    });
+                    
+                    if (verifyData.r3Form && verifyData.r3Form.some(entry => entry.chataId === selectedChataId)) {
                         dataVerified = true;
-                        console.log('Data verified in R3_Form sheet');
+                        console.log('Data verified in R3_Form sheet:', verifyData.r3Form.find(entry => entry.chataId === selectedChataId));
                         break;
                     }
                 } catch (error) {
@@ -733,52 +733,35 @@ async function handleSubmit() {
                 throw new Error('Could not verify data in R3_Form sheet after multiple attempts');
             }
 
-            // 3. Make Apps Script calls in sequence
-            try {
-                // Template stage
-                updateProgress(notification, 'template', 'Preparing template...');
-                const templateResult = await makeAppsScriptCall(APPS_SCRIPT_URLS.template, selectedChataId);
-                console.log('Template stage result:', templateResult);
+            // 3. Make Apps Script calls in sequence with proper CHATA ID
+            updateProgress(notification, 'template', 'Preparing template...');
+            const templateResult = await makeAppsScriptCall(APPS_SCRIPT_URLS.template, selectedChataId);
+            console.log('Template stage result:', templateResult);
+            
+            updateProgress(notification, 'analysis', 'Analyzing data...');
+            const analysisResult = await makeAppsScriptCall(APPS_SCRIPT_URLS.analysis, selectedChataId);
+            console.log('Analysis stage result:', analysisResult);
+            
+            updateProgress(notification, 'report', 'Generating report...');
+            const result = await makeAppsScriptCall(APPS_SCRIPT_URLS.report, selectedChataId);
+            console.log('Report stage result:', result);
+
+            if (result && result.progress && result.progress.details) {
+                const { documentUrl, emailStatus } = result.progress.details;
                 
-                if (!templateResult.success) {
-                    throw new Error(`Template stage failed: ${templateResult.error || 'Unknown error'}`);
+                updateProgress(notification, 'email', 'Process completed', {
+                    documentUrl: documentUrl,
+                    emailStatus: emailStatus.sent ? 
+                        `Email sent to ${emailStatus.recipientEmail}` : 
+                        `Email sending failed: ${emailStatus.error}`
+                });
+
+                if (documentUrl) {
+                    window.open(documentUrl, '_blank');
                 }
                 
-                // Analysis stage
-                updateProgress(notification, 'analysis', 'Analyzing data...');
-                const analysisResult = await makeAppsScriptCall(APPS_SCRIPT_URLS.analysis, selectedChataId);
-                console.log('Analysis stage result:', analysisResult);
-                
-                if (!analysisResult.success) {
-                    throw new Error(`Analysis stage failed: ${analysisResult.error || 'Unknown error'}`);
-                }
-                
-                // Report generation stage
-                updateProgress(notification, 'report', 'Generating report...');
-                const result = await makeAppsScriptCall(APPS_SCRIPT_URLS.report, selectedChataId);
-                console.log('Report stage result:', result);
-
-                if (result?.success && result.progress?.details) {
-                    const { documentUrl, emailStatus } = result.progress.details;
-                    
-                    updateProgress(notification, 'email', 'Process completed', {
-                        documentUrl: documentUrl,
-                        emailStatus: emailStatus.sent ? 
-                            `Email sent to ${emailStatus.recipientEmail}` : 
-                            `Email sending failed: ${emailStatus.error}`
-                    });
-
-                    if (documentUrl) {
-                        window.open(documentUrl, '_blank');
-                    }
-                    
-                } else {
-                    throw new Error('Invalid response format from report generation');
-                }
-
-            } catch (error) {
-                console.error('Apps Script call error:', error);
-                throw error;
+            } else {
+                throw new Error('Invalid response format from report generation');
             }
 
         } catch (error) {
