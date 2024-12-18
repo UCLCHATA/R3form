@@ -1,0 +1,276 @@
+<script>
+// Store form field contents
+let fieldContents = {
+    'clinical-observations': '',
+    'strengths-abilities': '',
+    'priority-support': '',
+    'support-recommendations': '',
+    referrals: {
+        checked: [],
+        remarks: ''
+    }
+};
+let selectedChataId = '';
+let selectedData = {};
+
+function loadChataData() {
+    google.script.run
+        .withSuccessHandler(function(response) {
+            if (response.result === 'success') {
+                populateChataSelect(response.data);
+            } else {
+                console.error('Error loading CHATA data:', response.error);
+                alert('Error loading CHATA data. Please try again.');
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('Failed to load CHATA data:', error);
+            alert('Failed to load CHATA data. Please try again.');
+        })
+        .getChataData();
+}
+
+function populateChataSelect(data) {
+    const select = document.getElementById('chata-id-select');
+    const nameDisplay = document.getElementById('chata-name-display');
+    
+    // Clear existing options except the first one
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    
+    // Add new options
+    data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.id;
+        select.appendChild(option);
+    });
+    
+    // Add change event listener
+    select.addEventListener('change', function() {
+        selectedChataId = this.value;
+        const selectedItem = data.find(item => item.id === selectedChataId);
+        selectedData = selectedItem || {};
+        
+        if (selectedItem) {
+            nameDisplay.textContent = selectedItem.name;
+            updatePDFViewers(selectedItem.id);
+        } else {
+            nameDisplay.textContent = '';
+            hidePDFViewers();
+        }
+    });
+}
+
+function updatePDFViewers(chataId) {
+    // Update logic for PDF viewers based on CHATA ID
+    const frames = [
+        document.getElementById('pdf-frame-1'),
+        document.getElementById('pdf-frame-2')
+    ];
+    const placeholders = [
+        document.getElementById('pdf-placeholder-1'),
+        document.getElementById('pdf-placeholder-2')
+    ];
+
+    // Example: Update src attribute of iframes based on CHATA ID
+    frames.forEach((frame, index) => {
+        if (frame && placeholders[index]) {
+            // Here you would set the actual PDF URL based on your data
+            const pdfUrl = `https://your-pdf-url/${chataId}/report${index + 1}`;
+            frame.style.display = 'block';
+            frame.src = pdfUrl;
+            placeholders[index].style.display = 'none';
+        }
+    });
+}
+
+function hidePDFViewers() {
+    const frames = [
+        document.getElementById('pdf-frame-1'),
+        document.getElementById('pdf-frame-2')
+    ];
+    const placeholders = [
+        document.getElementById('pdf-placeholder-1'),
+        document.getElementById('pdf-placeholder-2')
+    ];
+
+    frames.forEach((frame, index) => {
+        if (frame && placeholders[index]) {
+            frame.style.display = 'none';
+            frame.src = '';
+            placeholders[index].style.display = 'flex';
+        }
+    });
+}
+
+function setupExpandableFields() {
+    const fields = document.querySelectorAll('.expandable-field');
+    const modal = document.querySelector('.modal-container');
+    const backdrop = document.querySelector('.modal-backdrop');
+    const textarea = modal.querySelector('.expandable-text');
+    
+    fields.forEach(field => {
+        const preview = field.querySelector('.field-preview');
+        const fieldId = field.dataset.fieldId;
+        
+        field.addEventListener('click', () => {
+            const currentContent = fieldContents[fieldId] || preview.textContent;
+            modal.querySelector('.modal-header h4').textContent = field.previousElementSibling.textContent;
+            textarea.value = currentContent;
+            modal.dataset.currentField = fieldId;
+            
+            modal.style.display = 'block';
+            backdrop.style.display = 'block';
+            textarea.focus();
+        });
+    });
+    
+    // Close modal when clicking backdrop
+    backdrop.addEventListener('click', () => {
+        modal.style.display = 'none';
+        backdrop.style.display = 'none';
+        
+        const fieldId = modal.dataset.currentField;
+        const field = document.querySelector(`[data-field-id="${fieldId}"]`);
+        const preview = field.querySelector('.field-preview');
+        
+        fieldContents[fieldId] = textarea.value;
+        preview.textContent = textarea.value || preview.dataset.placeholder;
+    });
+}
+
+function setupReferrals() {
+    const checkboxes = document.querySelectorAll('.referrals-grid input[type="checkbox"]');
+    const otherInput = document.querySelector('.referral-other-input');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                fieldContents.referrals.checked.push(checkbox.value);
+            } else {
+                const index = fieldContents.referrals.checked.indexOf(checkbox.value);
+                if (index > -1) {
+                    fieldContents.referrals.checked.splice(index, 1);
+                }
+            }
+        });
+    });
+    
+    if (otherInput) {
+        otherInput.addEventListener('input', (e) => {
+            fieldContents.referrals.remarks = e.target.value;
+        });
+    }
+}
+
+function handleSubmit() {
+    // Validate CHATA ID
+    if (!selectedChataId) {
+        alert('Please select a CHATA ID');
+        return;
+    }
+    
+    // Get status values
+    const ascStatus = document.querySelector('select[name="asc_status"]').value;
+    const adhdStatus = document.querySelector('select[name="adhd_status"]').value;
+    
+    // Validate required fields
+    if (!ascStatus || !adhdStatus) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Prepare form data
+    const formData = {
+        CHATA_ID: selectedChataId,
+        Name: selectedData.name,
+        ASC_Status: ascStatus,
+        ADHD_Status: adhdStatus,
+        Key_Clinical_Observations: fieldContents['clinical-observations'],
+        Strengths_and_Abilities: fieldContents['strengths-abilities'],
+        Priority_Support_Areas: fieldContents['priority-support'],
+        Support_Recommendations: fieldContents['support-recommendations'],
+        Professional_Referrals: formatReferrals()
+    };
+
+    // Submit form
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.result === 'success') {
+                alert('Assessment submitted successfully!');
+                if (confirm('Would you like to clear the form?')) {
+                    clearForm();
+                }
+            } else {
+                alert('Error submitting form: ' + result.error);
+            }
+        })
+        .withFailureHandler(function(error) {
+            alert('Error submitting form: ' + error);
+        })
+        .submitForm(formData);
+}
+
+function formatReferrals() {
+    const referrals = fieldContents.referrals;
+    let referralText = referrals.checked.join(', ');
+    if (referrals.remarks) {
+        referralText += '\nOther remarks: ' + referrals.remarks;
+    }
+    return referralText;
+}
+
+function clearForm() {
+    const chataIdSelect = document.getElementById('chata-id-select');
+    const nameDisplay = document.getElementById('chata-name-display');
+    
+    if (chataIdSelect) chataIdSelect.selectedIndex = 0;
+    if (nameDisplay) nameDisplay.textContent = '';
+    
+    document.querySelector('select[name="asc_status"]').selectedIndex = 0;
+    document.querySelector('select[name="adhd_status"]').selectedIndex = 0;
+    
+    // Clear expandable fields
+    Object.keys(fieldContents).forEach(key => {
+        if (key === 'referrals') {
+            fieldContents.referrals = { checked: [], remarks: '' };
+        } else {
+            fieldContents[key] = '';
+            const preview = document.querySelector(`[data-field-id="${key}"] .field-preview`);
+            if (preview) {
+                preview.textContent = preview.dataset.placeholder;
+            }
+        }
+    });
+    
+    // Clear checkboxes
+    document.querySelectorAll('.referrals-grid input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    // Clear other remarks
+    const otherInput = document.querySelector('.referral-other-input');
+    if (otherInput) otherInput.value = '';
+    
+    selectedChataId = '';
+    selectedData = {};
+    
+    // Hide PDF viewers
+    hidePDFViewers();
+}
+
+// Initialize when the document is ready
+document.addEventListener('DOMContentLoaded', function() {
+    loadChataData();
+    setupExpandableFields();
+    setupReferrals();
+    
+    // Add submit button listener
+    const submitButton = document.querySelector('.submit-button');
+    if (submitButton) {
+        submitButton.addEventListener('click', handleSubmit);
+    }
+});
+</script> 

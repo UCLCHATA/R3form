@@ -1,0 +1,18 @@
+title: R3 Form
+description: R3 Form Application
+theme: jekyll-theme-minimal
+baseurl: "/R3"
+url: "https://chaya-tan.github.io"
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-remote-theme
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git 

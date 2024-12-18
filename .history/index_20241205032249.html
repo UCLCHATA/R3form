@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Assessment Form R3</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script type="module" src="app.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <h1>Assessment Form R3</h1>
+            <div class="header-controls">
+                <select id="chata-id-select" name="chata_id" required>
+                    <option value="">Select CHATA ID</option>
+                </select>
+                <button id="refresh-data" class="refresh-button" title="Refresh CHATA data">
+                    <i class="material-icons">refresh</i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Left side - PDF viewers -->
+        <div class="pdf-container">
+            <div class="pdf-viewer" id="pdf-viewer-1">
+                <h3><i class="material-icons">description</i>CHATA Report R1</h3>
+                <div class="pdf-placeholder" id="pdf-placeholder-1">
+                    <i class="material-icons">picture_as_pdf</i>
+                    <span>Please select a CHATA ID to view the report</span>
+                </div>
+                <iframe id="pdf-frame-1" 
+                        style="display: none;"
+                        allow="autoplay"
+                        width="100%"
+                        height="100%"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
+            <div class="pdf-viewer" id="pdf-viewer-2">
+                <h3><i class="material-icons">description</i>ADOS Report R2</h3>
+                <div class="pdf-placeholder" id="pdf-placeholder-2">
+                    <i class="material-icons">picture_as_pdf</i>
+                    <span>Please select a CHATA ID to view the report</span>
+                </div>
+                <iframe id="pdf-frame-2"
+                        style="display: none;"
+                        allow="autoplay"
+                        width="100%"
+                        height="100%"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Right side - Form -->
+        <div class="form-container">
+            <div class="form-content">
+                <!-- Status Section -->
+                <div class="section status-section">
+                    <h4><i class="material-icons">check_circle_outline</i>Status</h4>
+                    <div class="status-group">
+                        <div class="status-item">
+                            <h4>ASC Status</h4>
+                            <select name="asc_status">
+                                <option value="">--</option>
+                                <option>ASC confirmed</option>
+                                <option>ASC not confirmed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="status-item">
+                            <h4>ADHD Status</h4>
+                            <select name="adhd_status">
+                                <option value="">--</option>
+                                <option>No concerns identified</option>
+                                <option>Assessment recommended</option>
+                                <option>Previously confirmed</option>
+                                <option>Confirmed during diagnosis</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Referrals -->
+                <div class="section referrals-section">
+                    <h4><i class="material-icons">share</i>Professional Referrals</h4>
+                    <div class="referrals-grid">
+                        <label><input type="checkbox" value="Speech & Language"> Speech & Language</label>
+                        <label><input type="checkbox" value="Educational Psychology"> Educational Psychology</label>
+                        <label><input type="checkbox" value="Sleep Support"> Sleep Support</label>
+                        <div class="referral-other-row">
+                            <label><input type="checkbox" value="Other"> Other </label>
+                            <input type="text" name="other_referrals" class="referral-other-input" placeholder="Specific Remarks">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Sections Grid -->
+                <div class="middle-sections-grid">
+                    <!-- Clinical Observations -->
+                    <div class="text-box-container clinical" data-default-text="• Social engagement patterns
+• Communication style
+• Response to activities
+• Behavioral patterns
+• Notable strengths/challenges">
+                        <div class="text-box-header">
+                            <i class="material-icons">visibility</i>
+                            <h4>Key Clinical Observations</h4>
+                        </div>
+                        <div class="text-box-content">
+                            <textarea class="text-area" spellcheck="true"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Strengths & Abilities -->
+                    <div class="text-box-container strengths" data-default-text="• Memory (e.g., Strong recall of sequences)
+• Visual (e.g., Pattern recognition)
+• Physical (e.g., Fine motor skills)
+• Creative (e.g., Problem-solving abilities)
+• Focus (e.g., Sustained attention)
+• Problem-solving (e.g., Logical approach)">
+                        <div class="text-box-header">
+                            <i class="material-icons">stars</i>
+                            <h4>Strengths & Abilities</h4>
+                        </div>
+                        <div class="text-box-content">
+                            <textarea class="text-area" spellcheck="true"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Priority Support Areas -->
+                    <div class="text-box-container priority" data-default-text="• Assessment data patterns
+• Family priorities
+• School observations
+• Clinical judgment">
+                        <div class="text-box-header">
+                            <i class="material-icons">priority_high</i>
+                            <h4>Priority Support Areas</h4>
+                        </div>
+                        <div class="text-box-content">
+                            <textarea class="text-area" spellcheck="true"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Support Recommendations -->
+                    <div class="text-box-container support" data-default-text="• Strength-based strategies
+• Practical implementation
+• Home/school alignment
+• Family resources">
+                        <div class="text-box-header">
+                            <i class="material-icons">lightbulb</i>
+                            <h4>Support Recommendations</h4>
+                        </div>
+                        <div class="text-box-content">
+                            <textarea class="text-area" spellcheck="true"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button Group -->
+            <div class="button-group">
+                <button class="submit-button">Submit Form</button>
+                <button class="clear-button">Clear Form</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal System -->
+    <div class="text-box-modal">
+        <div class="modal-header">
+            <div class="modal-controls">
+                <button class="modal-save">Save</button>
+                <button class="modal-close">Close</button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <textarea class="modal-textarea" spellcheck="true"></textarea>
+        </div>
+    </div>
+    <div class="modal-backdrop"></div>
+
+    <footer class="site-footer">
+        <img class="footer-logo" src="https://upload.wikimedia.org/wikipedia/sco/thumb/d/d1/University_College_London_logo.svg/300px-University_College_London_logo.svg.png" alt="Left Logo">
+        <div class="footer-content">
+            <p>&copy; 2024 CHATA Report Writing Form System</p>
+        </div>
+        <img class="footer-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/National_Health_Service_%28England%29_logo.svg/371px-National_Health_Service_%28England%29_logo.svg.png" alt="Right Logo">
+    </footer>
+</body>
+</html>

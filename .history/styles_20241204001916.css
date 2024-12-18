@@ -1,0 +1,532 @@
+/* Global styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.site-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+    height: calc(100vh - 90px);
+}
+
+/* PDF Container Styles */
+.pdf-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 100%;
+}
+
+.pdf-viewer {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 8px;
+}
+
+.pdf-viewer h3 {
+    padding: 8px 12px;
+    margin: 0;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pdf-viewer h3 i {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.pdf-viewer iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    min-height: 0;
+    background: #fff;
+}
+
+/* Custom scrollbar for PDF viewer */
+.pdf-viewer::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.pdf-viewer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Hide scrollbar when not hovering */
+.pdf-viewer {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.pdf-viewer:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+/* Form Container Styles */
+.form-container {
+    flex: 1;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 4px 40px 4px;
+}
+
+/* Status Section */
+.section {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+.section h4 {
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section h4 i {
+    font-size: 1.2rem;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+/* Status group */
+.status-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-item h4 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.status-item select {
+    width: 100%;
+    padding: 2px 4px;
+    height: 26px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.status-item select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    outline: none;
+}
+
+/* Instruction box */
+.instruction-box {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 3px;
+    margin: 2px 0;
+    color: #6c757d;
+    font-size: 0.75rem;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    line-height: 1.2;
+}
+
+/* Expandable fields */
+.expandable-field {
+    background: #fff;
+    border: none;
+    padding: 8px;
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.field-preview {
+    min-height: 30px;
+    height: auto;
+    max-height: none;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    flex: 1;
+    transition: border-color 0.2s;
+    resize: vertical;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    position: relative;
+}
+
+/* Resizing handle style */
+.field-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 50%,
+        #adb5bd 50%,
+        #adb5bd 100%
+    );
+    cursor: ns-resize;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.field-preview:hover::after {
+    opacity: 1;
+}
+
+/* Default preview text style */
+.field-preview.default-text {
+    color: #6c757d;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Hover and focus states */
+.field-preview:hover,
+.field-preview:focus {
+    border-color: #adb5bd;
+    outline: none;
+}
+
+.field-preview:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Referrals grid */
+.referrals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 3px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.referrals-grid label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.referrals-grid label:hover {
+    background: #f8f9fa;
+}
+
+.referrals-grid input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+
+.referral-other-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2px;
+    grid-column: 1 / -1;
+}
+
+.referral-other-input {
+    flex: 1;
+    padding: 0.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Button group */
+.button-group {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.submit-button, .clear-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    height: 32px;
+    flex: 1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button {
+    background: #2ecc71;
+    color: white;
+}
+
+.submit-button:hover {
+    background: #27ae60;
+}
+
+.clear-button {
+    background: #e74c3c;
+    color: white;
+}
+
+.clear-button:hover {
+    background: #c0392b;
+}
+
+/* Header controls */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#chata-id-select {
+    min-width: 200px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+#chata-id-select option {
+    background: #2c3e50;
+    color: white;
+}
+
+.refresh-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.refresh-button i {
+    font-size: 20px;
+}
+
+/* Add rotation animation for refresh icon */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.refresh-button.loading i {
+    animation: spin 1s linear infinite;
+}
+
+/* PDF placeholder */
+.pdf-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 2rem;
+    gap: 12px;
+}
+
+.pdf-placeholder i {
+    font-size: 48px;
+    color: #adb5bd;
+}
+
+.pdf-placeholder span {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Modal System */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-container {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 45%;
+    min-height: fit-content;
+    max-height: 80vh;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    overflow: hidden;
+}
+
+.modal-container.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header i {
+    font-size: 1.2rem;
+}
+
+.modal-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.modal-content {
+    padding: 16px;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+}
+
+.modal-content .expandable-text {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: none;
+    overflow-y: auto;
+    background: #fff;
+    color: #2c3e50;
+}
+
+.modal-content .expandable-text:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Footer */
+.site-footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+} 

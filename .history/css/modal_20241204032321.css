@@ -1,0 +1,88 @@
+/* Modal overlay system */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10000;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    max-height: 40vh;
+    min-height: 40vh;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    resize: both;
+    overflow: auto;
+}
+
+.modal-container.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    flex-shrink: 0;
+}
+
+.modal-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.modal-content {
+    padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.expandable-text {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.expandable-text::placeholder {
+    color: #6c757d;
+    opacity: 0;
+    white-space: pre-line;
+}
+
+/* Resize handle styling */
+.modal-container:active {
+    cursor: nwse-resize;
+}
+
+/* Make sure modal content adjusts with resize */
+.modal-container, .modal-content, .expandable-text {
+    max-height: 100vh;
+}
+
+/* Remove old modal footer styles */
+.modal-footer {
+    display: none;
+} 
