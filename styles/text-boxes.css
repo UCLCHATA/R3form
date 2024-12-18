@@ -269,4 +269,21 @@
 /* Remove backdrop styles */
 .modal-backdrop {
     display: none;
+}
+
+/* Modal header icon colors */
+.text-box-modal[data-type="clinical"] .text-box-header i {
+    color: var(--border-clinical);
+}
+
+.text-box-modal[data-type="strengths"] .text-box-header i {
+    color: var(--border-strengths);
+}
+
+.text-box-modal[data-type="priority"] .text-box-header i {
+    color: var(--border-priority);
+}
+
+.text-box-modal[data-type="support"] .text-box-header i {
+    color: var(--border-support);
 } 

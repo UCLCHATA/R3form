@@ -214,6 +214,16 @@ class TextBox {
         
         TextBox.activeInstance = this;
         this.modalTextArea.value = this.textArea.value;
+        
+        // Get the type from the container's class
+        const type = this.container.classList.contains('clinical') ? 'clinical' :
+                     this.container.classList.contains('strengths') ? 'strengths' :
+                     this.container.classList.contains('priority') ? 'priority' :
+                     this.container.classList.contains('support') ? 'support' : '';
+        
+        // Set the type on the modal
+        this.modal.dataset.type = type;
+        
         this.modal.classList.add('active');
         this.container.classList.add('active');
         this.modalTextArea.focus();
